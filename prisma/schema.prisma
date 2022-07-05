@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,14 +7,253 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model allergenek {
+  id                       Int                        @id @default(autoincrement())
+  neve                     String                     @db.VarChar(255)
+  kod                      Int
+  termekek_allergenek_rend termekek_allergenek_rend[]
+}
+
+model asztalok {
+  id         Int          @id @default(autoincrement())
+  etterem_id Int
+  ferohely   Int
+  elerheto   Int          @default(1)
+  kod        String       @db.VarChar(45)
+  ettermek   ettermek     @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_asztalok_etteremId_ettermek")
+  foglalasok foglalasok[]
+  rendelesek rendelesek[]
+
+  @@index([etterem_id], map: "FK_asztalok_etteremId_ettermek")
+}
+
+model city_zip {
+  id             Int        @id @default(autoincrement())
+  cit_zip        String?    @db.VarChar(8)
+  cit_name       String?    @db.VarChar(64)
+  cit_cty_code   String?    @db.VarChar(2)
+  cit_lat        Float?     @db.Float
+  cit_long       Float?     @db.Float
+  cit_cso_code   Int?
+  cit_rig_id     Int?
+  cit_range      Float?     @db.Float
+  cit_population Int?
+  cit_homes      Int?
+  ettermek       ettermek[]
+
+  @@index([cit_zip], map: "cit_zip")
+}
+
+
+model etterem_kategoria_rend {
+  etterem_id   Int
+  kategoria_id Int
+  ettermek     ettermek   @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_etteremKategoriaRend_etteremId_ettermek")
+  kategoriak   kategoriak @relation(fields: [kategoria_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_etteremKategoriaRend_kategoriaId_kategoriak")
+
+  @@id([etterem_id, kategoria_id])
+  @@index([etterem_id], map: "FK_etteremKategoriaRend_etteremId_ettermek")
+  @@index([kategoria_id], map: "FK_etteremKategoriaRend_kategoriaId_kategoriak")
+}
+
+model etterem_konyhatipus_rend {
+  konyha_tipus_id Int
+  etterem_id      Int
+  ettermek        ettermek      @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_etteremKonyhatipusokRend_etteremId_ettermek")
+  konyhatipusok   konyhatipusok @relation(fields: [konyha_tipus_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_etteremKonyhatipusRend_tipusId_konyhatipusok")
+
+  @@id([etterem_id, konyha_tipus_id])
+  @@index([konyha_tipus_id], map: "FK_etteremKonyhatipusRend_tipusId_konyhatipusok")
+  @@index([etterem_id], map: "FK_etteremKonyhatipusokRend_etteremId_ettermek")
+}
+
+model etterem_nyelv {
   id         Int      @id @default(autoincrement())
-  email      String   @unique
+  kod        String   @db.VarChar(2)
+  etterem_id Int
+  nyelv      String   @db.VarChar(45)
+  ettermek   ettermek @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "etterem_nyelv_ettermek_id_fk")
+
+  @@index([etterem_id], map: "etterem_nyelv_ettermek_id_fk")
+}
+
+model etterem_tipus_rend {
+  etterem_id      Int
+  tipus_id        Int
+  ettermek        ettermek        @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_EtteremKatRend_etteremId_ettermek")
+  etterem_tipusok etterem_tipusok @relation(fields: [tipus_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_EtteremKatRend_kategoriaId_kategoriak")
+
+  @@id([etterem_id, tipus_id])
+  @@index([etterem_id], map: "FK_EtteremKatRend_etteremId_ettermek")
+  @@index([tipus_id], map: "FK_EtteremKatRend_kategoriaId_kategoriak")
+}
+
+model etterem_tipusok {
+  id                 Int                  @id @default(autoincrement())
+  tipus              String               @db.VarChar(255)
+  etterem_tipus_rend etterem_tipus_rend[]
+}
+
+model ettermek {
+  id                       Int                        @id @default(autoincrement())
+  city_id                  Int
+  address                  String                     @db.VarChar(255)
+  name                     String                     @db.VarChar(155)
+  adoszam                  String                     @db.VarChar(13)
+  lang                     Float?                     @db.Float
+  long                     Float?                     @db.Float
+  telefon                  String?                    @db.VarChar(45)
+  email                    String?                    @db.VarChar(255)
+  nyitvatartas             Json?
+  weblap                   String?                    @db.VarChar(255)
+  img_path                 String?                    @db.VarChar(255)
+  img_bg_path              String?                    @db.VarChar(255)
+  city_zip                 city_zip                   @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ettermek_cityId_cityZip")
+  asztalok                 asztalok[]
+  etterem_kategoria_rend   etterem_kategoria_rend[]
+  etterem_konyhatipus_rend etterem_konyhatipus_rend[]
+  etterem_nyelv            etterem_nyelv[]
+  etterem_tipus_rend       etterem_tipus_rend[]
+  foglalasok               foglalasok[]
+  rendelesek               rendelesek[]
+  termekek                 termekek[]
+  user                     user[]
+
+  @@index([city_id], map: "FK_ettermek_cityId_cityZip")
+}
+
+model foglalasok {
+  id             Int       @id
+  asztal_id      Int?
+  user_id        Int
+  etterem_id     Int
+  kezdet         DateTime  @db.DateTime(0)
+  vege           DateTime  @db.DateTime(0)
+  foglalas_ideje DateTime  @db.Timestamp(0)
+  asztalok       asztalok? @relation(fields: [asztal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_foglalasok_asztalId_asztalok")
+  ettermek       ettermek  @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_foglalasok_etteremId_ettermek")
+  user           user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_foglalasok_userId_user")
+
+  @@index([asztal_id], map: "FK_foglalasok_asztalId_asztalok")
+  @@index([etterem_id], map: "FK_foglalasok_etteremId_ettermek")
+  @@index([user_id], map: "FK_foglalasok_userId_user")
+}
+
+model kategoriak {
+  id                     Int                      @id @default(autoincrement())
+  kategoria              String                   @db.VarChar(255)
+  parent_id              Int?
+  kategoriak             kategoriak?              @relation("kategoriakTokategoriak_parent_id", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_kategoria_parent")
+  etterem_kategoria_rend etterem_kategoria_rend[]
+  other_kategoriak       kategoriak[]             @relation("kategoriakTokategoriak_parent_id")
+  termekek               termekek[]
+
+  @@index([parent_id], map: "asd_idx")
+}
+
+model konyhatipusok {
+  id                       Int                        @id @default(autoincrement())
+  tipus                    String                     @db.VarChar(45)
+  etterem_konyhatipus_rend etterem_konyhatipus_rend[]
+}
+
+model log {
+  id              Int      @id @default(autoincrement())
+  etterem_id      Int
+  user_id         Int
+  muvelet         String   @db.VarChar(45)
+  Table_name      String   @db.VarChar(45)
+  FIeld_name      String   @db.VarChar(45)
+  Field_value_old String   @db.VarChar(45)
+  Field_value_new String   @db.VarChar(45)
+  timestamp       DateTime @db.Timestamp(0)
+}
+
+model rendeles_statusz {
+  id         Int          @id
+  statusz    String       @db.VarChar(45)
+  rendelesek rendelesek[]
+}
+
+model rendelesek {
+  id               Int              @id
+  user_id          Int
+  etterem_id       Int
+  statusz_id       Int
+  termek_id        Int
+  asztal_id        Int?
+  mennyiseg        Int
+  rendeles_ideje   DateTime         @db.Timestamp(0)
+  kupon            String?          @db.VarChar(45)
+  rendeles_id      Int
+  asztalok         asztalok?        @relation(fields: [asztal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_asztalId_asztalok")
+  ettermek         ettermek         @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_etteremId_ettermek")
+  rendeles_statusz rendeles_statusz @relation(fields: [statusz_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_statuszId_rendelesStatusz")
+  termekek         termekek         @relation(fields: [termek_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_termekId_termekek")
+  user             user             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_userId_user")
+
+  @@index([asztal_id], map: "FK_rendelesek_asztalId_asztalok")
+  @@index([etterem_id], map: "FK_rendelesek_etteremId_ettermek")
+  @@index([statusz_id], map: "FK_rendelesek_statuszId_rendelesStatusz")
+  @@index([termek_id], map: "FK_rendelesek_termekId_termekek")
+  @@index([user_id], map: "FK_rendelesek_userId_user")
+}
+
+model termekek {
+  id                       Int                        @id @default(autoincrement())
+  etterem_id               Int
+  kategoria_id             Int?
+  ar_forint                Float
+  ar_euro                  Float?
+  mennyis_g                String?                    @map("mennyiség") @db.VarChar(45)
+  img_path                 String?                    @db.VarChar(255)
+  elerheto                 Int                        @default(0)
+  ettermek                 ettermek                   @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_termekek_etteremId_ettermek")
+  kategoriak               kategoriak?                @relation(fields: [kategoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_termekek_kategoriaId_kategoriak")
+  rendelesek               rendelesek[]
+  termekek_allergenek_rend termekek_allergenek_rend[]
+  termekek_fordito         termekek_fordito[]
+
+  @@index([etterem_id], map: "FK_termekek_etteremId_ettermek")
+  @@index([kategoria_id], map: "FK_termekek_kategoriaId_kategoriak")
+}
+
+model termekek_allergenek_rend {
+  allergen_id Int
+  termek_id   Int
+  allergenek  allergenek @relation(fields: [allergen_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_termekekAllergenekRend_allergenId_allergenek")
+  termekek    termekek   @relation(fields: [termek_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_allergenekRend_termekId_termekek")
+
+  @@id([allergen_id, termek_id])
+  @@index([termek_id], map: "FK_allergenekRend_termekId_termekek")
+  @@index([allergen_id], map: "FK_termekekAllergenekRend_allergenId_allergenek")
+}
+
+model termekek_fordito {
+  id            Int      @id @default(autoincrement())
+  termek_id     Int
+  nyelv_kod     String   @db.VarChar(2)
+  termek_nev    String?  @db.VarChar(45)
+  termek_leiras String?  @db.VarChar(255)
+  termekek      termekek @relation(fields: [termek_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_310")
+
+  @@index([termek_id], map: "FK_312")
+}
+
+model user {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique(map: "UNIQ_8D93D649E7927C74") @db.VarChar(180)
   etterem_id Int?
-  roles      String
-  password   String
-  name       String
-  phone      String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  roles      String       @default("user") @db.VarChar(20)
+  password   String       @db.VarChar(255)
+  name       String       @db.VarChar(255)
+  phone      String?      @db.VarChar(45)
+  updated_at DateTime     @default(now()) @db.Timestamp(0)
+  created_at DateTime     @default(now()) @db.Timestamp(0)
+  settings   Json?
+  ettermek   ettermek?    @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_etteremId_ettermek")
+  foglalasok foglalasok[]
+  rendelesek rendelesek[]
+
+  @@index([etterem_id], map: "FK_user_etteremId_ettermek")
 }

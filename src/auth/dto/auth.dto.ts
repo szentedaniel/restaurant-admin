@@ -1,25 +1,36 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator"
+/* eslint-disable indent */
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator"
 
 export class AuthSignUpDto {
+  @ApiProperty()
   @IsEmail()
   @IsNotEmpty()
-    email: string
+  email: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
-    password: string
+  password: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
-    name: string
+  name: string
+
+  @ApiPropertyOptional({ enum: ['owner', 'admin', 'staff', 'user'], default: 'user' })
+  @IsOptional()
+  roles: string | undefined
 }
 
 export class AuthSignInDto {
+  @ApiProperty()
   @IsEmail()
   @IsNotEmpty()
-    email: string
+  email: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
-    password: string
+  password: string
 }
