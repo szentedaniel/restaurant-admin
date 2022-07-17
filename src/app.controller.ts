@@ -1,7 +1,7 @@
-import { Controller, ForbiddenException, Get, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Controller, ForbiddenException, Get, NotFoundException, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { Response } from 'express'
-import { createReadStream } from 'fs'
+import { readdirSync } from 'fs'
 import { diskStorage } from 'multer'
 import { extname, join } from 'path'
 import { of } from 'rxjs'
@@ -55,6 +55,15 @@ export class AppController {
 
   @Get('image/:filename')
   getFile(@Res() res: Response, @Param('filename') filename) {
-    return of(res.sendFile(join(process.cwd(), `./uploads/${filename}`)))
+    const files = readdirSync('./uploads')
+    console.log(files)
+    console.log(files.includes(filename))
+
+    if (files.includes(filename)) {
+      return of(res.sendFile(join(process.cwd(), `./uploads/${filename}`)))
+    } else {
+      console.log('1nem oké')
+      return new NotFoundException('Image not found.')
+    }
   }
 }
