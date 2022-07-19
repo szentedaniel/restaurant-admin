@@ -5,13 +5,15 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { PrismaModule } from './prisma/prisma.module'
+import { FileuploadModule } from './fileupload/fileupload.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MulterModule.register({ dest: './uploads' }),
     AuthModule,
-    PrismaModule],
+    PrismaModule,
+    FileuploadModule],
   controllers: [AppController],
   providers: [AppService],
 })
