@@ -6,7 +6,7 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { FileuploadModule } from './fileupload/fileupload.module'
-import { MailModule } from './mail/mail.module';
+import { MailModule } from './mail/mail.module'
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { MailModule } from './mail/mail.module';
     PrismaModule,
     FileuploadModule,
     MailModule],
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService],
 })
 export class AppModule { }

@@ -44,7 +44,6 @@ model city_zip {
   @@index([cit_zip], map: "cit_zip")
 }
 
-
 model etterem_kategoria_rend {
   etterem_id   Int
   kategoria_id Int
@@ -250,6 +249,7 @@ model user {
   phone      String?      @db.VarChar(45)
   updated_at DateTime     @default(now()) @db.Timestamp(0)
   created_at DateTime     @default(now()) @db.Timestamp(0)
+  verify     String?      @unique
   settings   Json?
   ettermek   ettermek?    @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_etteremId_ettermek")
   foglalasok foglalasok[]

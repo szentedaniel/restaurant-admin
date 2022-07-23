@@ -1,5 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { AuthSignInDto, AuthSignUpDto } from './dto'
 
@@ -20,5 +20,13 @@ export class AuthController {
     console.log(dto)
 
     return this.authService.signin(dto)
+  }
+
+  @Get('verify')
+  @ApiQuery({ name: 'code', type: 'string' })
+  verify(@Query('code') code: string) {
+    console.log(code)
+
+    return this.authService.verify(code)
   }
 }
