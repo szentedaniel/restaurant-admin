@@ -6,6 +6,7 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { FileuploadModule } from './fileupload/fileupload.module'
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { FileuploadModule } from './fileupload/fileupload.module'
     MulterModule.register({ dest: './uploads' }),
     AuthModule,
     PrismaModule,
-    FileuploadModule],
+    FileuploadModule,
+    MailModule],
   controllers: [AppController],
   providers: [AppService],
 })

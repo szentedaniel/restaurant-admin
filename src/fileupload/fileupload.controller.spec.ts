@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { FileuploadController } from './fileupload.controller';
+import { Test, TestingModule } from '@nestjs/testing'
+import { FileuploadController } from './fileupload.controller'
 
 describe('FileuploadController', () => {
-  let controller: FileuploadController;
+  let controller: FileuploadController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FileuploadController],
-    }).compile();
+    }).compile()
 
-    controller = module.get<FileuploadController>(FileuploadController);
-  });
+    controller = module.get<FileuploadController>(FileuploadController)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+})

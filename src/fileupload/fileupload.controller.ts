@@ -1,10 +1,12 @@
 import { Controller, ForbiddenException, Get, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
 import { FileuploadService } from './fileupload.service'
 
+@ApiTags('files')
 @Controller('files')
 export class FileuploadController {
   constructor(private readonly fileuploadService: FileuploadService) { }
