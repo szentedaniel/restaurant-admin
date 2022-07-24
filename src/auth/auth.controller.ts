@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { AuthSignInDto, AuthSignUpDto } from './dto'
 
