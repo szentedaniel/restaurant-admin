@@ -6,21 +6,6 @@ import { ConfigService } from '@nestjs/config'
 
 @Module({
   imports: [
-    //   MailerModule.forRoot({
-    //     // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
-    //     // or
-    //     defaults: {
-    //       from: '"No Reply" <noreply@example.com>',
-    //     },
-    //     template: {
-    //       dir: join(__dirname, 'templates'),
-    //       adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
-    //       options: {
-    //         strict: true,
-    //       },
-    //     },
-    //   }),
-    // ],
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         // transport: 'smtps://user@domain.com:pass@smtp.domain.com',

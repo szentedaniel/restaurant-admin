@@ -29,8 +29,7 @@ export class FileuploadService {
       }
 
     } catch (err) {
-      this.logger.error('An error occurred while uploading the image')
-      console.log(err)
+      this.logger.error('An error occurred while uploading an image')
       return {
         'success': false,
         'data': err
@@ -38,10 +37,10 @@ export class FileuploadService {
     }
   }
 
-  getImage(res: Response, filename: string){
+  getImage(res: Response, filename: string) {
     const files = readdirSync('./uploads')
-    console.log(files)
-    console.log(files.includes(filename))
+    // console.log(files)
+    // console.log(files.includes(filename))
 
     if (files.includes(filename))
       return of(res.sendFile(join(process.cwd(), `./uploads/${filename}`)))

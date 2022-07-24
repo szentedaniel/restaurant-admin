@@ -1,6 +1,6 @@
 import { Controller, ForbiddenException, Get, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
@@ -12,6 +12,18 @@ export class FileuploadController {
   constructor(private readonly fileuploadService: FileuploadService) { }
 
   @Post('upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'file',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
       destination: './uploads',
@@ -37,6 +49,11 @@ export class FileuploadController {
   }
 
   @Get('image/:filename')
+  @ApiParam({
+    name: 'filename',
+    description: 'Name of the image (*on the server*)',
+    example: 'email.png'
+  })
   getFile(@Res() res: Response, @Param('filename') filename) {
     return this.fileuploadService.getImage(res, filename)
   }
