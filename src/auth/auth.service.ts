@@ -8,10 +8,11 @@ import { user } from '@prisma/client'
 import { join } from 'path'
 import { ConfigService } from '@nestjs/config'
 import * as objectHash from 'object-hash'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private readonly mailerService: MailerService, private config: ConfigService) { }
+  constructor(private prisma: PrismaService, private readonly mailerService: MailerService, private config: ConfigService, private jwt: JwtService) { }
 
 
   async signup(dto: AuthSignUpDto) {
@@ -33,7 +34,15 @@ export class AuthService {
       const registeredUser = await this.sendVerificationEmail(user)
 
       delete registeredUser.password
-      return registeredUser
+
+      const access_token = await this.signToken(user.id, user.email)
+      const response = {
+        //user: registeredUser, 
+        access_token
+      }
+
+      return response
+
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -61,7 +70,12 @@ export class AuthService {
 
     // send back the user
     delete user.password
-    return user
+    const access_token = await this.signToken(user.id, user.email)
+    const response = {
+      //user,
+      access_token
+    }
+    return response
   }
 
   async verify(code: string) {
@@ -72,7 +86,7 @@ export class AuthService {
     })
     if (!user) throw new NotFoundException()
 
-    const updatedUser = await this.prisma.user.update({
+    await this.prisma.user.update({
       where: {
         verify: code
       },
@@ -128,6 +142,17 @@ export class AuthService {
         console.log(err)
       })
     return updatedUser
+  }
+
+  async signToken(userId: number, email: string): Promise<string> {
+    const payload = {
+      sub: userId,
+      email
+    }
+    return this.jwt.signAsync(payload, {
+      expiresIn: '15m',
+      secret: this.config.get('JWT_SECRET')
+    })
   }
 
 }

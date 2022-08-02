@@ -1,16 +1,19 @@
-import { Controller, ForbiddenException, Get, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Controller, ForbiddenException, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
+import { JwtGuard } from 'src/auth/guard'
 import { FileuploadService } from './fileupload.service'
 
 @ApiTags('files')
-@Controller('files')
+@Controller('api/files')
 export class FileuploadController {
   constructor(private readonly fileuploadService: FileuploadService) { }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @Post('upload')
   @ApiConsumes('multipart/form-data')
   @ApiBody({

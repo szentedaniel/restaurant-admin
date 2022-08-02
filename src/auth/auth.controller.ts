@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
-import { ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
-import { AuthSignInDto, AuthSignUpDto } from './dto'
+import { AuthSignInDto, AuthSignInResOk, AuthSignUpDto } from './dto'
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
@@ -16,6 +16,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @ApiOkResponse({ type: AuthSignInResOk })
   signin(@Body() dto: AuthSignInDto) {
     console.log(dto)
 
