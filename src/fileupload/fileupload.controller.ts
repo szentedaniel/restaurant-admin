@@ -1,10 +1,12 @@
 import { Controller, ForbiddenException, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiSecurity, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
-import { JwtGuard } from 'src/auth/guard'
+import { GetUser, Roles } from 'src/auth/decorator'
+import { Role } from 'src/auth/enums'
+import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { FileuploadService } from './fileupload.service'
 
 @ApiTags('files')
@@ -12,9 +14,11 @@ import { FileuploadService } from './fileupload.service'
 export class FileuploadController {
   constructor(private readonly fileuploadService: FileuploadService) { }
 
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
   @Post('upload')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Staff, Role.Admin, Role.Owner)
+  @ApiBearerAuth()
+  @ApiSecurity('baseSecurity', [Role.Staff, Role.Admin, Role.Owner])
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -47,7 +51,9 @@ export class FileuploadController {
       callback(null, true)
     },
   }))
-  uploadFile(@UploadedFile() file: Express.Multer.File,) {
+  uploadFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
+    console.log('upload from user: ', user)
+
     return this.fileuploadService.uploadImage(file)
   }
 

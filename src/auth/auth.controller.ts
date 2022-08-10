@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
-import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
-import { AuthSignInDto, AuthSignInResOk, AuthSignUpDto } from './dto'
+import { AuthSignInDto, AuthSignUpDto } from './dto'
 
 @ApiTags('auth')
 @Controller('api/auth')
@@ -16,7 +16,6 @@ export class AuthController {
   }
 
   @Post('login')
-  @ApiOkResponse({ type: AuthSignInResOk })
   signin(@Body() dto: AuthSignInDto) {
     console.log(dto)
 
