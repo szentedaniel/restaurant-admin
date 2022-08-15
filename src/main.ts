@@ -7,6 +7,9 @@ import { swaggerDarkTheme } from './assets'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
+  // CORS
+  app.enableCors()
+
   // Validation pipe API dto-hoz
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true

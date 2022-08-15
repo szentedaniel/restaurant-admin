@@ -20,24 +20,28 @@ export class AuthService {
     const hash = await argon.hash(dto.password)
     // save user to db
     try {
-      console.log(dto.roles,)
+      let role = dto.role
+      if (!role) role = ['user']
 
+      console.log(role,)
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
           name: dto.name,
-          roles: dto.roles,
+          role: role,
           password: hash
         }
       })
 
       const registeredUser = await this.sendVerificationEmail(user)
 
+      const convertedUser = this.convertUserData(registeredUser)
+
       delete registeredUser.password
 
       const access_token = await this.signToken(user.id, user.email)
       const response = {
-        //user: registeredUser, 
+        user: convertedUser,
         access_token
       }
 
@@ -69,10 +73,26 @@ export class AuthService {
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect.')
 
     // send back the user
+    const convertedUser = this.convertUserData(user)
     delete user.password
     const access_token = await this.signToken(user.id, user.email)
     const response = {
-      //user,
+      user: convertedUser,
+      access_token
+    }
+    return response
+  }
+
+  async refreshToken(user: user) {
+    // if user does not exist throw exception
+    if (!user) throw new NotFoundException('User not found.')
+
+    // send back the user
+    const convertedUser = this.convertUserData(user)
+    delete user.password
+    const access_token = await this.signToken(user.id, user.email)
+    const response = {
+      user: convertedUser,
       access_token
     }
     return response
@@ -155,4 +175,20 @@ export class AuthService {
     })
   }
 
+  convertUserData(user: user) {
+
+    return {
+      role: user.role,
+      data: {
+        displayName: user.name,
+        photoURL: 'assets/images/avatars/brian-hughes.jpg',
+        email: user.email,
+        shortcuts: []
+      }
+
+    }
+
+  }
 }
+
+

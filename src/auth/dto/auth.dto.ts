@@ -20,7 +20,7 @@ export class AuthSignUpDto {
 
   @ApiPropertyOptional({ enum: ['owner', 'admin', 'staff', 'user'], default: 'user' })
   @IsOptional()
-  roles: string | undefined
+  role: Array<string> | undefined
 }
 
 export class AuthSignInDto {
