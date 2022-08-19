@@ -107,6 +107,7 @@ model ettermek {
   weblap                   String?                    @db.VarChar(255)
   img_path                 String?                    @db.VarChar(255)
   img_bg_path              String?                    @db.VarChar(255)
+  ceg                      String?                    @db.VarChar(255)
   city_zip                 city_zip                   @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ettermek_cityId_cityZip")
   asztalok                 asztalok[]
   etterem_kategoria_rend   etterem_kategoria_rend[]
