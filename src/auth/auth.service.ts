@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { AuthSignInDto, AuthSignUpDto } from './dto'
+import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, AuthUpdateSettingsDto } from './dto'
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { MailerService } from '@nestjs-modules/mailer'
@@ -53,6 +53,90 @@ export class AuthService {
           throw new ForbiddenException('Credentials taken')
         }
       }
+      throw error
+    }
+  }
+
+  async signupAdmin(dto: AuthSignUpAdminDto) {
+    // generate password hash
+    const hash = await argon.hash(dto.password)
+    // save user to db
+    try {
+      let role = dto.role
+      if (!role) role = ['user']
+
+      console.log(role,)
+      const user = await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          name: dto.name,
+          role: role,
+          password: hash,
+          ettermek: {
+            create: {
+              name: dto.restaurantName,
+              adoszam: Number(dto.taxNumber),
+              ceg: dto.companyName,
+              city_name: dto.cityName,
+              address: dto.address,
+              lat: Number(dto.lat),
+              lng: Number(dto.lng)
+            }
+          }
+        }
+      })
+
+      const registeredUser = await this.sendVerificationEmail(user)
+
+      const convertedUser = this.convertUserData(registeredUser)
+
+      delete registeredUser.password
+
+      const access_token = await this.signToken(user.id, user.email)
+      const response = {
+        user: convertedUser,
+        access_token
+      }
+
+      return response
+
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ForbiddenException('Credentials taken')
+        }
+      }
+      throw error
+    }
+  }
+
+  async updateSettings(dto: AuthUpdateSettingsDto) {
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: {
+          id: dto.userId
+        },
+        data: {
+          settings: {
+            upsert: {
+              create: {
+                settings: dto.settings,
+                shortcuts: dto.shortcuts
+              },
+              update: {
+                settings: dto.settings,
+                shortcuts: dto.shortcuts
+              }
+            }
+          }
+
+        }
+      })
+      delete updatedUser.password
+
+      return updatedUser
+
+    } catch (error) {
       throw error
     }
   }

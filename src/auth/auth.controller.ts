@@ -3,7 +3,7 @@ import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { user } from '@prisma/client'
 import { AuthService } from './auth.service'
 import { GetUser } from './decorator'
-import { AuthSignInDto, AuthSignUpDto } from './dto'
+import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto } from './dto'
 import { JwtGuard } from './guard'
 
 @ApiTags('auth')
@@ -12,10 +12,24 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('register')
-  signup(@Body() dto: AuthSignUpDto) {
+  signup(@Body() dto: AuthSignUpDto ) {
     console.log(dto)
 
     return this.authService.signup(dto)
+  }
+
+  @Post('register/admin')
+  signupAdmin(@Body() dto: AuthSignUpAdminDto) {
+    console.log(dto)
+
+    return this.authService.signupAdmin(dto)
+  }
+
+  @Post('settings')
+  updateSettings(@Body() dto: AuthSignUpAdminDto) {
+    console.log(dto)
+
+    return this.authService.signupAdmin(dto)
   }
 
   @Post('login')

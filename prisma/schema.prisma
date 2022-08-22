@@ -28,18 +28,17 @@ model asztalok {
 }
 
 model city_zip {
-  id             Int        @id @default(autoincrement())
-  cit_zip        String?    @db.VarChar(8)
-  cit_name       String?    @db.VarChar(64)
-  cit_cty_code   String?    @db.VarChar(2)
-  cit_lat        Float?     @db.Float
-  cit_long       Float?     @db.Float
+  id             Int     @id @default(autoincrement())
+  cit_zip        String? @db.VarChar(8)
+  cit_name       String? @db.VarChar(64)
+  cit_cty_code   String? @db.VarChar(2)
+  cit_lat        Float?  @db.Float
+  cit_long       Float?  @db.Float
   cit_cso_code   Int?
   cit_rig_id     Int?
-  cit_range      Float?     @db.Float
+  cit_range      Float?  @db.Float
   cit_population Int?
   cit_homes      Int?
-  ettermek       ettermek[]
 
   @@index([cit_zip], map: "cit_zip")
 }
@@ -95,12 +94,12 @@ model etterem_tipusok {
 
 model ettermek {
   id                       Int                        @id @default(autoincrement())
-  city_id                  Int
+  city_name                String                     @db.VarChar(255)
   address                  String                     @db.VarChar(255)
   name                     String                     @db.VarChar(155)
-  adoszam                  String                     @db.VarChar(13)
-  lang                     Float?                     @db.Float
-  long                     Float?                     @db.Float
+  adoszam                  Float                      @db.Float
+  lat                      Float?
+  lng                      Float?
   telefon                  String?                    @db.VarChar(45)
   email                    String?                    @db.VarChar(255)
   nyitvatartas             Json?
@@ -108,7 +107,6 @@ model ettermek {
   img_path                 String?                    @db.VarChar(255)
   img_bg_path              String?                    @db.VarChar(255)
   ceg                      String?                    @db.VarChar(255)
-  city_zip                 city_zip                   @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ettermek_cityId_cityZip")
   asztalok                 asztalok[]
   etterem_kategoria_rend   etterem_kategoria_rend[]
   etterem_konyhatipus_rend etterem_konyhatipus_rend[]
@@ -118,8 +116,6 @@ model ettermek {
   rendelesek               rendelesek[]
   termekek                 termekek[]
   user                     user[]
-
-  @@index([city_id], map: "FK_ettermek_cityId_cityZip")
 }
 
 model foglalasok {
@@ -250,11 +246,18 @@ model user {
   phone      String?      @db.VarChar(45)
   updated_at DateTime     @default(now()) @db.Timestamp(0)
   created_at DateTime     @default(now()) @db.Timestamp(0)
-  settings   Json?
   verify     String?      @unique
   ettermek   ettermek?    @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_etteremId_ettermek")
   foglalasok foglalasok[]
   rendelesek rendelesek[]
+  settings   settings?
 
   @@index([etterem_id], map: "FK_user_etteremId_ettermek")
+}
+
+model settings {
+  user_id   Int   @id
+  settings  Json?
+  shortcuts Json?
+  user      user  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_settings_user")
 }

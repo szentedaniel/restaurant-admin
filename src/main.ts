@@ -12,7 +12,7 @@ async function bootstrap() {
 
   // Validation pipe API dto-hoz
   app.useGlobalPipes(new ValidationPipe({
-    whitelist: true
+    whitelist: false
   }))
 
   // Swagger
