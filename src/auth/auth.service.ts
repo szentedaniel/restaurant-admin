@@ -20,7 +20,7 @@ export class AuthService {
     const hash = await argon.hash(dto.password)
     // save user to db
     try {
-      let role = dto.role
+      let role = [dto.role]
       if (!role) role = ['user']
 
       console.log(role,)
@@ -62,7 +62,7 @@ export class AuthService {
     const hash = await argon.hash(dto.password)
     // save user to db
     try {
-      let role = dto.role
+      let role = [dto.role]
       if (!role) role = ['user']
 
       console.log(role,)
@@ -159,7 +159,7 @@ export class AuthService {
     // send back the user
     const convertedUser = this.convertUserData(user)
     delete user.password
-    const access_token = await this.signToken(user.id, user.email)
+    const access_token = await this.signToken(user.id, user.email, dto.remember)
     const response = {
       user: convertedUser,
       access_token
@@ -248,13 +248,13 @@ export class AuthService {
     return updatedUser
   }
 
-  async signToken(userId: number, email: string): Promise<string> {
+  async signToken(userId: number, email: string, remember = false): Promise<string> {
     const payload = {
       sub: userId,
       email
     }
     return this.jwt.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: remember === true ? '100y' : '1d',
       secret: this.config.get('JWT_SECRET')
     })
   }
@@ -265,7 +265,7 @@ export class AuthService {
       role: user.role,
       data: {
         displayName: user.name,
-        photoURL: 'assets/images/avatars/brian-hughes.jpg',
+        photoURL: '', //assets/images/avatars/brian-hughes.jpg
         email: user.email,
         shortcuts: []
       }

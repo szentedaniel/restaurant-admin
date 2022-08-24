@@ -8,6 +8,7 @@ import { FileuploadModule } from './fileupload/fileupload.module'
 import { MailModule } from './mail/mail.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { join } from 'path'
     AuthModule,
     PrismaModule,
     FileuploadModule,
-    MailModule],
+    MailModule,
+    UsersModule],
   controllers: [],
   providers: [AppService,],
 })

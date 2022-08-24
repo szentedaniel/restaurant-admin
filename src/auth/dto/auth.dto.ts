@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
-import { IsEmail, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from "class-validator"
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from "class-validator"
 
 export class AuthSignUpDto {
   @ApiProperty()
@@ -20,7 +20,7 @@ export class AuthSignUpDto {
 
   @ApiPropertyOptional({ enum: ['owner', 'admin', 'staff', 'user'], default: 'user' })
   @IsOptional()
-  role: Array<string> | undefined
+  role: string | undefined
 }
 
 export class AuthSignUpAdminDto {
@@ -41,7 +41,7 @@ export class AuthSignUpAdminDto {
 
   @ApiPropertyOptional({ enum: ['owner', 'admin', 'staff', 'user'], default: 'user' })
   @IsOptional()
-  role: Array<string> | undefined
+  role: string | undefined
 
   @ApiProperty()
   @IsString()
@@ -107,5 +107,10 @@ export class AuthSignInDto {
   @IsString()
   @IsNotEmpty()
   password: string
+
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  remember?: boolean
 }
 
