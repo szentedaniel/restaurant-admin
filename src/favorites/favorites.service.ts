@@ -2,14 +2,13 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { user } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { CreateFavoriteDto } from './dto/create-favorite.dto'
-import { UpdateFavoriteDto } from './dto/update-favorite.dto'
+import { CreateFavoriteProdDto, CreateFavoriteRestaurantDto } from './dto/create-favorite.dto'
 
 @Injectable()
 export class FavoritesService {
   constructor(private prisma: PrismaService) { }
 
-  async createProdFav(dto: CreateFavoriteDto, user: user) {
+  async createProdFav(dto: CreateFavoriteProdDto, user: user) {
     try {
       const fav = await this.prisma.kedvenc_termekek.create({
         data: {
@@ -65,11 +64,11 @@ export class FavoritesService {
   }
 
 
-  async createRestaurantFav(dto: CreateFavoriteDto, user: user) {
+  async createRestaurantFav(dto: CreateFavoriteRestaurantDto, user: user) {
     try {
-      const fav = await this.prisma.kedvenc_termekek.create({
+      const fav = await this.prisma.kedvenc_ettermek.create({
         data: {
-          termek_id: dto.termekId,
+          etterem_id: dto.restaurantId,
           user_id: user.id
         }
       })
@@ -87,7 +86,7 @@ export class FavoritesService {
 
   async findAllRestaurantFav(user: user) {
     try {
-      const favs = await this.prisma.kedvenc_termekek.findMany({
+      const favs = await this.prisma.kedvenc_ettermek.findMany({
         where: {
           user_id: user.id
         }
@@ -103,10 +102,10 @@ export class FavoritesService {
 
   async removeRestaurantFav(id: number, user: user) {
     try {
-      const fav = await this.prisma.kedvenc_termekek.delete({
+      const fav = await this.prisma.kedvenc_ettermek.delete({
         where: {
-          termek_id_user_id: {
-            termek_id: id,
+          etterem_id_user_id: {
+            etterem_id: id,
             user_id: user.id
           }
         }
