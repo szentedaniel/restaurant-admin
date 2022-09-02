@@ -23,8 +23,8 @@ export class RestaurantsController {
   @Get(':id')
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
-  findOne(@Param('id') id: string,) {
-    return this.restaurantsService.findOne(+id)
+  findOne(@Param('id') id: string, @GetUser() user: user) {
+    return this.restaurantsService.findOne(+id, user)
   }
 
   @Get(':id/products')
@@ -38,7 +38,7 @@ export class RestaurantsController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth()
-  update(@Param('id') id: string, @Body() updateRestaurantDto: UpdateRestaurantDto) {
-    return this.restaurantsService.update(+id, updateRestaurantDto)
+  update(@Param('id') id: string, @Body() updateRestaurantDto: UpdateRestaurantDto, @GetUser() user: user) {
+    return this.restaurantsService.update(+id, updateRestaurantDto, user)
   }
 }

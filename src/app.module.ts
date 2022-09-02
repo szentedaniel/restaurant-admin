@@ -11,6 +11,7 @@ import { join } from 'path'
 import { UsersModule } from './users/users.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { LanguagesModule } from './languages/languages.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { FavoritesModule } from './favorites/favorites.module';
     MailModule,
     UsersModule,
     RestaurantsModule,
-    FavoritesModule],
+    FavoritesModule,
+    LanguagesModule],
   controllers: [],
   providers: [AppService,],
 })

@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { user } from '@prisma/client'
+import { LanguagesService } from 'src/languages/languages.service'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 
 @Injectable()
 export class RestaurantsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private languages: LanguagesService) { }
 
 
   async findAll(user: user) {
@@ -17,7 +18,8 @@ export class RestaurantsService {
       const results = Promise.all(restaurants.map(async restaurant => {
         return {
           ...restaurant,
-          kedvenc: await this.isFavoriteRestaurant(restaurant.id, user)
+          kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
+          languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id)
         }
       }))
       return results
@@ -26,7 +28,7 @@ export class RestaurantsService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user: user) {
     try {
       const restaurant = await this.prisma.ettermek.findFirst({
         where: {
@@ -36,7 +38,11 @@ export class RestaurantsService {
 
       if (!restaurant) throw new NotFoundException(`Not found restaurant with id: ${id}`)
 
-      return restaurant
+      return {
+        ...restaurant,
+        kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
+        languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id)
+      }
     } catch (error) {
       throw error
     }
@@ -110,26 +116,24 @@ export class RestaurantsService {
     }
   }
 
-  async update(id: number, updateRestaurantDto: UpdateRestaurantDto) {
+  async update(id: number, updateRestaurantDto: UpdateRestaurantDto, user: user) {
     try {
+      if (updateRestaurantDto.languages.length > 0) {
+        await Promise.all(await this.languages.updateLanguagesByRestaurantId(id, { languages: updateRestaurantDto.languages }))
+      }
+      delete updateRestaurantDto.languages
       const updatedRestaurant = await this.prisma.ettermek.update({
         where: {
           id: id
         },
         data: updateRestaurantDto
       })
-
       if (!updatedRestaurant) throw new NotFoundException(`Not found restaurant with id: ${id}`)
-      return updatedRestaurant
+      return await this.findOne(id, user)
     } catch (error) {
       throw error
     }
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} restaurant`
-  }
-
 
   async isFavoriteFood(productId: number, user: user) {
     const isFavorite = await this.prisma.kedvenc_termekek.findFirst({

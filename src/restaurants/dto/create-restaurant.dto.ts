@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 import { Prisma } from "@prisma/client"
-import { IsNotEmpty, IsNumber, IsOptional, IsString, isString } from "class-validator"
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
 
 export class CreateRestaurantDto {
 
@@ -62,4 +62,8 @@ export class CreateRestaurantDto {
   @ApiPropertyOptional()
   @IsOptional()
   ceg: string | undefined
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  languages: Array<string> | undefined
 }
