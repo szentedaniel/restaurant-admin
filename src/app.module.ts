@@ -12,6 +12,8 @@ import { UsersModule } from './users/users.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { LanguagesModule } from './languages/languages.module';
+import { TablesModule } from './tables/tables.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -29,7 +31,9 @@ import { LanguagesModule } from './languages/languages.module';
     UsersModule,
     RestaurantsModule,
     FavoritesModule,
-    LanguagesModule],
+    LanguagesModule,
+    TablesModule,
+    CategoriesModule],
   controllers: [],
   providers: [AppService,],
 })

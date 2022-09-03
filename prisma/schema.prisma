@@ -19,8 +19,8 @@ model asztalok {
   id         Int          @id @default(autoincrement())
   etterem_id Int
   ferohely   Int
-  elerheto   Int          @default(1)
-  kod        String       @db.VarChar(45)
+  elerheto   Boolean      @default(true)
+  kod        String       @unique(map: "unq_asztalok") @db.VarChar(45)
   ettermek   ettermek     @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_asztalok_etteremId_ettermek")
   foglalasok foglalasok[]
   rendelesek rendelesek[]
@@ -174,26 +174,23 @@ model rendeles_statusz {
 }
 
 model rendelesek {
-  id               Int              @id
-  user_id          Int
-  etterem_id       Int
-  statusz_id       Int
-  termek_id        Int
-  asztal_id        Int?
-  mennyiseg        Int
-  rendeles_ideje   DateTime         @db.Timestamp(0)
-  kupon            String?          @db.VarChar(45)
-  rendeles_id      Int
-  asztalok         asztalok?        @relation(fields: [asztal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_asztalId_asztalok")
-  ettermek         ettermek         @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_etteremId_ettermek")
-  rendeles_statusz rendeles_statusz @relation(fields: [statusz_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_statuszId_rendelesStatusz")
-  termekek         termekek         @relation(fields: [termek_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_termekId_termekek")
-  user             user             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_userId_user")
+  id                  Int                   @id
+  user_id             Int
+  etterem_id          Int
+  statusz_id          Int
+  asztal_id           Int?
+  rendeles_ideje      DateTime              @db.Timestamp(0)
+  kupon               String?               @db.VarChar(45)
+  fogyasztasi_mod     Int
+  asztalok            asztalok?             @relation(fields: [asztal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_asztalId_asztalok")
+  ettermek            ettermek              @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_etteremId_ettermek")
+  rendeles_statusz    rendeles_statusz      @relation(fields: [statusz_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_statuszId_rendelesStatusz")
+  user                user                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_userId_user")
+  rendelesek_termekek rendelesek_termekek[]
 
   @@index([asztal_id], map: "FK_rendelesek_asztalId_asztalok")
   @@index([etterem_id], map: "FK_rendelesek_etteremId_ettermek")
   @@index([statusz_id], map: "FK_rendelesek_statuszId_rendelesStatusz")
-  @@index([termek_id], map: "FK_rendelesek_termekId_termekek")
   @@index([user_id], map: "FK_rendelesek_userId_user")
 }
 
@@ -209,7 +206,8 @@ model termekek {
   ettermek                 ettermek                   @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_termekek_etteremId_ettermek")
   kategoriak               kategoriak?                @relation(fields: [kategoria_id], references: [id], onUpdate: NoAction, map: "fk_termekek_kategoriaid_kategoriak")
   kedvenc_termekek         kedvenc_termekek[]
-  rendelesek               rendelesek[]
+  kosar                    kosar[]
+  rendelesek_termekek      rendelesek_termekek[]
   termekek_allergenek_rend termekek_allergenek_rend[]
   termekek_fordito         termekek_fordito[]
 
@@ -256,6 +254,7 @@ model user {
   foglalasok       foglalasok[]
   kedvenc_ettermek kedvenc_ettermek[]
   kedvenc_termekek kedvenc_termekek[]
+  kosar            kosar[]
   rendelesek       rendelesek[]
   settings         settings?
 
@@ -352,4 +351,26 @@ model kedvenc_termekek {
 
   @@id([termek_id, user_id])
   @@index([user_id], map: "fk_kedvenc_termekek_user")
+}
+
+model kosar {
+  user_id   Int
+  termek_id Int
+  darab     Int
+  termekek  termekek @relation(fields: [termek_id], references: [id], onDelete: Cascade, map: "fk_kosar_termekek")
+  user      user     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_kosar_user")
+
+  @@id([user_id, termek_id])
+  @@index([termek_id], map: "fk_kosar_termekek")
+}
+
+model rendelesek_termekek {
+  rendeles_id Int
+  termek_id   Int
+  darab       Int
+  termekek    termekek   @relation(fields: [termek_id], references: [id], onDelete: Cascade, map: "fk_rendelesek_termekek")
+  rendelesek  rendelesek @relation(fields: [rendeles_id], references: [id], onDelete: Cascade, map: "fk_rendelesek_termekek_rendeles")
+
+  @@id([rendeles_id, termek_id])
+  @@index([termek_id], map: "fk_rendelesek_termekek")
 }
