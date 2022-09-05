@@ -232,14 +232,15 @@ model termekek_allergenek_rend {
 
 model termekek_fordito {
   termek_id     Int
-  termek_nev    String?   @db.VarChar(45)
-  termek_leiras String?   @db.VarChar(255)
+  termek_nev    String?   @db.Text
+  termek_leiras String?   @db.Text
   nyelv_id      Int       @db.UnsignedInt
   languages     languages @relation(fields: [nyelv_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_termekek_fordito_languages")
   termekek      termekek  @relation(fields: [termek_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_termekek_fordito_termekek")
 
   @@id([termek_id, nyelv_id])
   @@index([nyelv_id], map: "fk_termekek_fordito_languages")
+  @@index([termek_id], map: "FK_312")
 }
 
 model user {

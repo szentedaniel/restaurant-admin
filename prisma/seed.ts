@@ -1,33 +1,70 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { PrismaClient } from '@prisma/client'
-import { categories, languages, users } from './data'
+import { allergenek, categories, fogyasztasiModok, languages, orderStatus, products, users } from './data'
 import * as argon from 'argon2'
 const prisma = new PrismaClient()
+const args = require('minimist')(process.argv.slice(2))
+// const argv = require('minimist')(process.argv.slice(2))
+console.log(args.demo)
 
-async function main() {
+async function main(demo = args.demo) {
   console.log('Seeding...')
 
-  // nyelvek létrehozása
+  // Nyelvek létrehozása
   await prisma.languages.createMany({
     data: languages
   })
 
-  // userek létrehozása étteremmel
-  for (const user of users) {
-    const hash = await argon.hash(user.password)
-    await prisma.user.create({
-      data: {
-        ...user,
-        password: hash
-      }
+  // Allergének feltöltése
+  for (const allergen of allergenek) {
+    await prisma.allergenek.create({
+      data: allergen
+    })
+  }
+
+  // Rendelési státuszok feltöltése
+  for (const orderStat of orderStatus) {
+    await prisma.rendeles_statusz.create({
+      data: orderStat
+    })
+  }
+
+  // Fogyasztási módok feltöltése
+  for (const fogyasztasiMod of fogyasztasiModok) {
+    await prisma.fogyasztasi_mod.create({
+      data: fogyasztasiMod
     })
   }
 
 
-  // kategoriak feltöltése az étteremhez
-  for (const categ of categories) {
-    await prisma.kategoriak.create({
-      data: categ
-    })
+  // DEMO ADATOK
+  if (demo === 'true') {
+    console.log('CREATING DEMO DATAS')
+
+    // userek létrehozása étteremmel
+    for (const user of users) {
+      const hash = await argon.hash(user.password)
+      await prisma.user.create({
+        data: {
+          ...user,
+          password: hash
+        }
+      })
+    }
+
+    // kategoriak feltöltése az étteremhez
+    for (const categ of categories) {
+      await prisma.kategoriak.create({
+        data: categ
+      })
+    }
+
+    // termékek feltöltése a kategoriákhoz
+    for (const product of products) {
+      await prisma.termekek.create({
+        data: product
+      })
+    }
   }
 
 
