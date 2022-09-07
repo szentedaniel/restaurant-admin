@@ -1,1 +1,3 @@
-export class CreateConsumptionTypeDto {}
+export class CreateConsumptionTypeDto {
+  mod_id: number
+}

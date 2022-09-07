@@ -8,7 +8,6 @@ import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 export class RestaurantsService {
   constructor(private prisma: PrismaService, private languages: LanguagesService) { }
 
-
   async findAll(user: user) {
     try {
       const restaurants = await this.prisma.ettermek.findMany({})
@@ -107,18 +106,15 @@ export class RestaurantsService {
         return kinalat
       }))
 
-
-
-
       return result
     } catch (error) {
-
+      throw error
     }
   }
 
   async update(id: number, updateRestaurantDto: UpdateRestaurantDto, user: user) {
     try {
-      if (updateRestaurantDto.languages.length > 0) {
+      if (updateRestaurantDto.languages) {
         await Promise.all(await this.languages.updateLanguagesByRestaurantId(id, { languages: updateRestaurantDto.languages }))
       }
       delete updateRestaurantDto.languages

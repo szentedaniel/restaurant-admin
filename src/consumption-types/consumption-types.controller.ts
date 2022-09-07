@@ -1,34 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ConsumptionTypesService } from './consumption-types.service';
-import { CreateConsumptionTypeDto } from './dto/create-consumption-type.dto';
-import { UpdateConsumptionTypeDto } from './dto/update-consumption-type.dto';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { GetUser, Roles } from 'src/auth/decorator'
+import { Role } from 'src/auth/enums'
+import { JwtGuard, RolesGuard } from 'src/auth/guard'
+import { ConsumptionTypesService } from './consumption-types.service'
+import { CreateConsumptionTypeDto } from './dto/create-consumption-type.dto'
 
-@Controller('consumption-types')
+@ApiTags('consumptionTypes')
+@Controller('api/consumptionTypes')
 export class ConsumptionTypesController {
-  constructor(private readonly consumptionTypesService: ConsumptionTypesService) {}
+  constructor(private readonly consumptionTypesService: ConsumptionTypesService) { }
 
   @Post()
-  create(@Body() createConsumptionTypeDto: CreateConsumptionTypeDto) {
-    return this.consumptionTypesService.create(createConsumptionTypeDto);
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin)
+  create(@Body() createConsumptionTypeDto: CreateConsumptionTypeDto, @GetUser('restaurant_id') restaurantId: number) {
+    return this.consumptionTypesService.create(createConsumptionTypeDto)
   }
 
   @Get()
   findAll() {
-    return this.consumptionTypesService.findAll();
+    return this.consumptionTypesService.findAll()
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.consumptionTypesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConsumptionTypeDto: UpdateConsumptionTypeDto) {
-    return this.consumptionTypesService.update(+id, updateConsumptionTypeDto);
+    return this.consumptionTypesService.findOne(+id)
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin)
   remove(@Param('id') id: string) {
-    return this.consumptionTypesService.remove(+id);
+    return this.consumptionTypesService.remove(+id)
   }
 }
