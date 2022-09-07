@@ -11,29 +11,21 @@ import { CreateConsumptionTypeDto } from './dto/create-consumption-type.dto'
 export class ConsumptionTypesController {
   constructor(private readonly consumptionTypesService: ConsumptionTypesService) { }
 
-  @Post()
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin)
-  create(@Body() createConsumptionTypeDto: CreateConsumptionTypeDto, @GetUser('restaurant_id') restaurantId: number) {
-    return this.consumptionTypesService.create(createConsumptionTypeDto)
-  }
+  // @Post()
+  // @ApiBearerAuth()
+  // @UseGuards(JwtGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  // create(@Body() createConsumptionTypeDto: CreateConsumptionTypeDto, @GetUser('restaurant_id') restaurantId: number) {
+  //   return this.consumptionTypesService.create(createConsumptionTypeDto)
+  // }
 
   @Get()
   findAll() {
-    return this.consumptionTypesService.findAll()
+    return this.consumptionTypesService.allConsumptionType()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.consumptionTypesService.findOne(+id)
-  }
-
-  @Delete(':id')
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin)
-  remove(@Param('id') id: string) {
-    return this.consumptionTypesService.remove(+id)
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.consumptionTypesService.supportedConsumptionTypesByRestaurant(+id)
+  // }
 }

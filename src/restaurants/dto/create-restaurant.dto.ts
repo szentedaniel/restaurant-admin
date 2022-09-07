@@ -66,4 +66,8 @@ export class CreateRestaurantDto {
   @ApiPropertyOptional()
   @IsOptional()
   languages: Array<string> | undefined
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  fogyasztasi_modok: Array<number> | undefined
 }

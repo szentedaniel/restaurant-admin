@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { user } from '@prisma/client'
+import { ConsumptionTypesService } from 'src/consumption-types/consumption-types.service'
 import { LanguagesService } from 'src/languages/languages.service'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 
 @Injectable()
 export class RestaurantsService {
-  constructor(private prisma: PrismaService, private languages: LanguagesService) { }
+  constructor(private prisma: PrismaService, private languages: LanguagesService, private consimptionTypes: ConsumptionTypesService) { }
 
   async findAll(user: user) {
     try {
@@ -18,7 +19,8 @@ export class RestaurantsService {
         return {
           ...restaurant,
           kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
-          languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id)
+          languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id),
+          fogyasztasi_modok: await this.consimptionTypes.supportedConsumptionTypesByRestaurant(restaurant.id),
         }
       }))
       return results
@@ -40,7 +42,8 @@ export class RestaurantsService {
       return {
         ...restaurant,
         kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
-        languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id)
+        languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id),
+        fogyasztasi_modok: await this.consimptionTypes.supportedConsumptionTypesByRestaurant(restaurant.id),
       }
     } catch (error) {
       throw error
@@ -116,8 +119,11 @@ export class RestaurantsService {
     try {
       if (updateRestaurantDto.languages) {
         await Promise.all(await this.languages.updateLanguagesByRestaurantId(id, { languages: updateRestaurantDto.languages }))
+      } else if (updateRestaurantDto.fogyasztasi_modok) {
+        await Promise.all(await this.consimptionTypes.updateRestaurantConsumptionTypeByRestaurantId(id, { consumptionType: updateRestaurantDto.fogyasztasi_modok }))
       }
       delete updateRestaurantDto.languages
+      delete updateRestaurantDto.fogyasztasi_modok
       const updatedRestaurant = await this.prisma.ettermek.update({
         where: {
           id: id
@@ -131,7 +137,7 @@ export class RestaurantsService {
     }
   }
 
-  async isFavoriteFood(productId: number, user: user) {
+  private async isFavoriteFood(productId: number, user: user) {
     const isFavorite = await this.prisma.kedvenc_termekek.findFirst({
       where: {
         termek_id: productId,
@@ -142,7 +148,7 @@ export class RestaurantsService {
     return Boolean(isFavorite)
   }
 
-  async isFavoriteRestaurant(restaurantId: number, user: user) {
+  private async isFavoriteRestaurant(restaurantId: number, user: user) {
     const isFavorite = await this.prisma.kedvenc_ettermek.findFirst({
       where: {
         etterem_id: restaurantId,
