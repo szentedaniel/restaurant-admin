@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { user } from '@prisma/client'
 import { AuthService } from './auth.service'

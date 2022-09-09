@@ -1,10 +1,6 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
-import { GetUser, Roles } from 'src/auth/decorator'
-import { Role } from 'src/auth/enums'
-import { JwtGuard, RolesGuard } from 'src/auth/guard'
+import { Controller, Get} from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { ConsumptionTypesService } from './consumption-types.service'
-import { CreateConsumptionTypeDto } from './dto/create-consumption-type.dto'
 
 @ApiTags('consumptionTypes')
 @Controller('api/consumptionTypes')

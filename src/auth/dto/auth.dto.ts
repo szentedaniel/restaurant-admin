@@ -97,18 +97,20 @@ export class AuthUpdateSettingsDto {
   shortcuts: object
 }
 
+const emailExamples = ['admin@developer.com', 'staff@developer.com', 'user@developer.com']
+
 export class AuthSignInDto {
-  @ApiProperty()
+  @ApiProperty({ examples: emailExamples, example: emailExamples[0] })
   @IsEmail()
   @IsNotEmpty()
   email: string
 
-  @ApiProperty()
+  @ApiProperty({ example: 'developer' })
   @IsString()
   @IsNotEmpty()
   password: string
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: true })
   @IsBoolean()
   @IsOptional()
   remember?: boolean

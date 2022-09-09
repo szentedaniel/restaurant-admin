@@ -9,3 +9,8 @@ export const genTableUniqueCode = (id: number) => {
 
   return ehh
 }
+
+export const genOrderUniqueId = () => {
+  const nanoid = customAlphabet(alphabet, 8)
+  return nanoid()
+}

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { PrismaClient } from '@prisma/client'
-import { allergenek, categories, fogyasztasiModok, languages, orderStatus, products, users } from './data'
+import { allergenek, categories, fogyasztasiModok, languages, orderStatus, paymentTypes, products, users } from './data'
 import * as argon from 'argon2'
 const prisma = new PrismaClient()
 const args = require('minimist')(process.argv.slice(2))
@@ -33,6 +33,13 @@ async function main(demo = args.demo) {
   for (const fogyasztasiMod of fogyasztasiModok) {
     await prisma.fogyasztasi_mod.create({
       data: fogyasztasiMod
+    })
+  }
+
+  // Fizetési módok feltöltése
+  for (const paymentType of paymentTypes) {
+    await prisma.fizetesi_mod.create({
+      data: paymentType
     })
   }
 
