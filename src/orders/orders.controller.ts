@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
 import { OrdersService } from './orders.service'
 import { CreateOrderDto } from './dto/create-order.dto'
-import { UpdateOrderDto } from './dto/update-order.dto'
-import { ApiTags } from '@nestjs/swagger'
-import { GetUser } from 'src/auth/decorator'
+import { myCartDto, PayRequiredDto, UpdateOrderDto } from './dto/update-order.dto'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { GetUser, Roles } from 'src/auth/decorator'
 import { user } from '@prisma/client'
+import { JwtGuard, RolesGuard } from 'src/auth/guard'
+import { Role } from 'src/auth/enums'
 
 @ApiTags('orders')
 @Controller('api/orders')
@@ -12,27 +14,46 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   create(@Body() createOrderDto: CreateOrderDto, @GetUser() user: user) {
-    return this.ordersService.create(createOrderDto, user)
+    return this.ordersService.createOrder(createOrderDto, user)
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll()
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
+  findAll(@GetUser('restaurant_id') restaurantId: number) {
+    return this.ordersService.findAllOrdersByRestaurant(restaurantId)
   }
 
   @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(+id)
+    return this.ordersService.findOne(id)
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto)
+    return this.ordersService.update(id, updateOrderDto)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id)
+  @Post('payReq')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.User)
+  pay(@Body() dto: PayRequiredDto, @GetUser() user: user) {
+    return this.ordersService.payReq(dto, user)
+  }
+
+  @Post('myCart')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.User)
+  myCart(@Body() dto: myCartDto, @GetUser() user: user) {
+    return this.ordersService.myCart(dto, user)
   }
 }

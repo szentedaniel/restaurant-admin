@@ -1,4 +1,25 @@
-import { PartialType } from '@nestjs/swagger'
-import { CreateOrderDto } from './create-order.dto'
+/* eslint-disable indent */
+import { ApiProperty, PartialType } from '@nestjs/swagger'
+import { IsNumber } from 'class-validator'
 
-export class UpdateOrderDto extends PartialType(CreateOrderDto) { }
+export class UpdateOrderDto {
+  @ApiProperty()
+  @IsNumber()
+  status_id: number
+}
+
+export class PayRequiredDto {
+  @ApiProperty()
+  @IsNumber()
+  etterem_id: number
+
+  @ApiProperty()
+  @IsNumber()
+  fizetesi_mod_id: number
+}
+
+export class myCartDto {
+  @ApiProperty()
+  @IsNumber()
+  etterem_id: number
+}

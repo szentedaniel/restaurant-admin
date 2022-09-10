@@ -184,7 +184,7 @@ model rendelesek {
   rendeles_ideje      DateTime              @default(dbgenerated("(now())")) @db.Timestamp(0)
   kupon               String?               @db.VarChar(45)
   fizetes_most        Boolean
-  fizetesi_mod_id     Int?                  @unique(map: "unq_rendelesek_fizetesi_mod_id")
+  fizetesi_mod_id     Int?
   fogyasztasi_mod_id  Int
   asztalok            asztalok?             @relation(fields: [asztal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_asztalId_asztalok")
   ettermek            ettermek              @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_etteremId_ettermek")
@@ -199,6 +199,7 @@ model rendelesek {
   @@index([statusz_id], map: "FK_rendelesek_statuszId_rendelesStatusz")
   @@index([user_id], map: "FK_rendelesek_userId_user")
   @@index([fogyasztasi_mod_id], map: "fk_rendelesek_fogyasztasi_mod")
+  @@index([fizetesi_mod_id], map: "fk_rendelesek_fizetesi_mod")
 }
 
 model termekek {
@@ -427,7 +428,7 @@ model rendeles_statusz_fordito {
 model fizetesi_mod {
   id                   Int                    @id
   fizetesi_mod_fordito fizetesi_mod_fordito[]
-  rendelesek           rendelesek?
+  rendelesek           rendelesek[]
 }
 
 model fizetesi_mod_fordito {
