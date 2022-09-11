@@ -1,6 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { Response } from 'express'
 import { readdirSync } from 'fs'
+import { lastIndexOf } from 'lodash'
 import { join } from 'path'
 import { of } from 'rxjs'
 
@@ -44,6 +45,15 @@ export class FileuploadService {
 
     if (files.includes(filename))
       return of(res.sendFile(join(process.cwd(), `./uploads/${filename}`)))
+    throw new NotFoundException('Image not found.')
+  }
+
+  getStaticImage(res: Response, filename: string) {
+    const path = `./images/allergies`
+
+    const files = readdirSync(path)
+    if (files.includes(filename))
+      return of(res.sendFile(join(process.cwd(), `${path}/${filename}`)))
     throw new NotFoundException('Image not found.')
   }
 

@@ -214,7 +214,6 @@ model termekek {
   ettermek                 ettermek                   @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_termekek_etteremId_ettermek")
   kategoriak               kategoriak?                @relation(fields: [kategoria_id], references: [id], onUpdate: NoAction, map: "fk_termekek_kategoriaid_kategoriak")
   kedvenc_termekek         kedvenc_termekek[]
-  kosar                    kosar[]
   rendelesek_termekek      rendelesek_termekek[]
   termekek_allergenek_rend termekek_allergenek_rend[]
   termekek_fordito         termekek_fordito[]
@@ -226,8 +225,8 @@ model termekek {
 model termekek_allergenek_rend {
   allergen_id Int
   termek_id   Int
-  termekek    termekek   @relation(fields: [termek_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_allergenekRend_termekId_termekek")
   allergenek  allergenek @relation(fields: [allergen_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_termekekAllergenekRend_allergenId_allergenek")
+  termekek    termekek   @relation(fields: [termek_id], references: [id], onDelete: Cascade, map: "fk_allergenekrend_termekid_termekek")
 
   @@id([allergen_id, termek_id])
   @@index([termek_id], map: "FK_allergenekRend_termekId_termekek")
@@ -240,7 +239,7 @@ model termekek_fordito {
   termek_leiras String?   @db.Text
   nyelv_id      Int       @db.UnsignedInt
   languages     languages @relation(fields: [nyelv_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_termekek_fordito_languages")
-  termekek      termekek  @relation(fields: [termek_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_termekek_fordito_termekek")
+  termekek      termekek  @relation(fields: [termek_id], references: [id], onDelete: Cascade, map: "fk_termekek_fordito_termekek")
 
   @@id([termek_id, nyelv_id])
   @@index([nyelv_id], map: "fk_termekek_fordito_languages")
@@ -262,7 +261,6 @@ model user {
   foglalasok       foglalasok[]
   kedvenc_ettermek kedvenc_ettermek[]
   kedvenc_termekek kedvenc_termekek[]
-  kosar            kosar[]
   rendelesek       rendelesek[]
   settings         settings?
 
@@ -362,17 +360,6 @@ model kedvenc_termekek {
 
   @@id([termek_id, user_id])
   @@index([user_id], map: "fk_kedvenc_termekek_user")
-}
-
-model kosar {
-  user_id   Int
-  termek_id Int
-  darab     Int
-  termekek  termekek @relation(fields: [termek_id], references: [id], onDelete: Cascade, map: "fk_kosar_termekek")
-  user      user     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_kosar_user")
-
-  @@id([user_id, termek_id])
-  @@index([termek_id], map: "fk_kosar_termekek")
 }
 
 model rendelesek_termekek {

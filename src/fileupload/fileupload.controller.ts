@@ -67,4 +67,14 @@ export class FileuploadController {
     return this.fileuploadService.getImage(res, filename)
   }
 
+  @Get('allergies/:filename')
+  @ApiParam({
+    name: 'filename',
+    description: 'Code of the allergy image (*on the server*)',
+    example: '1.png'
+  })
+  getStaticFile(@Res() res: Response, @Param('filename') filename) {
+    return this.fileuploadService.getStaticImage(res, filename)
+  }
+
 }

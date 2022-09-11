@@ -16,6 +16,8 @@ import { TablesModule } from './tables/tables.module'
 import { CategoriesModule } from './categories/categories.module'
 import { ConsumptionTypesModule } from './consumption-types/consumption-types.module'
 import { OrdersModule } from './orders/orders.module'
+import { ProductsModule } from './products/products.module'
+import { AllergiesModule } from './allergies/allergies.module'
 
 @Module({
   imports: [
@@ -33,11 +35,13 @@ import { OrdersModule } from './orders/orders.module'
     UsersModule,
     RestaurantsModule,
     FavoritesModule,
-    LanguagesModule,
     TablesModule,
     CategoriesModule,
+    OrdersModule,
+    ProductsModule,
     ConsumptionTypesModule,
-    OrdersModule],
+    LanguagesModule,
+    AllergiesModule],
   controllers: [],
   providers: [AppService,],
 })

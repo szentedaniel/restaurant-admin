@@ -113,7 +113,7 @@ const Allergenek =
 export const allergenek: Prisma.allergenekCreateInput[] = [
   {
     kod: 1,
-    image_path: '',
+    image_path: 'files/allergies/1.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.gluten
@@ -122,7 +122,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 2,
-    image_path: '',
+    image_path: 'files/allergies/2.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.rakfelek
@@ -131,7 +131,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 3,
-    image_path: '',
+    image_path: 'files/allergies/3.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.tojas
@@ -140,7 +140,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 4,
-    image_path: '',
+    image_path: 'files/allergies/4.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.hal
@@ -149,7 +149,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 5,
-    image_path: '',
+    image_path: 'files/allergies/5.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.foldimogyoro
@@ -158,7 +158,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 6,
-    image_path: '',
+    image_path: 'files/allergies/6.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.szojabab
@@ -167,7 +167,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 7,
-    image_path: '',
+    image_path: 'files/allergies/7.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.tej
@@ -176,7 +176,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 8,
-    image_path: '',
+    image_path: 'files/allergies/8.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.diofelek
@@ -185,7 +185,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 9,
-    image_path: '',
+    image_path: 'files/allergies/9.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.zeller
@@ -194,7 +194,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 10,
-    image_path: '',
+    image_path: 'files/allergies/10.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.mustar
@@ -203,7 +203,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 11,
-    image_path: '',
+    image_path: 'files/allergies/11.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.szezammag
@@ -212,7 +212,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 12,
-    image_path: '',
+    image_path: 'files/allergies/12.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.szulfitok
@@ -221,7 +221,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 13,
-    image_path: '',
+    image_path: 'files/allergies/13.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.csillagfurt
@@ -230,7 +230,7 @@ export const allergenek: Prisma.allergenekCreateInput[] = [
   },
   {
     kod: 14,
-    image_path: '',
+    image_path: 'files/allergies/14.png',
     allergenek_fordito: {
       createMany: {
         data: Allergenek.puhatestuek
