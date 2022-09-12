@@ -29,7 +29,7 @@ export class AuthService {
           email: dto.email,
           name: dto.name,
           role: role,
-          password: hash
+          password: hash,
         }
       })
 

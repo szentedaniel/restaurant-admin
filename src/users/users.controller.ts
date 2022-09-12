@@ -6,7 +6,7 @@ import { user } from '@prisma/client'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { Role } from 'src/auth/enums'
-import { Roles } from 'src/auth/decorator'
+import { GetUser, Roles } from 'src/auth/decorator'
 
 @ApiTags('users')
 @Controller('api/users')
@@ -17,16 +17,16 @@ export class UsersController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto)
+  create(@Body() createUserDto: CreateUserDto, @GetUser() user: user) {
+    return this.usersService.create(createUserDto, user)
   }
 
-  @Get('restaurant/:restaurantId')
+  @Get('restaurant')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth()
-  findAll(@Param('restaurantId') id: string) {
-    return this.usersService.findAll(+id)
+  findAll(@GetUser('etterem_id') id: string, @GetUser('id') userId: string) {
+    return this.usersService.findAll(+id, +userId)
   }
 
   @Get(':id')

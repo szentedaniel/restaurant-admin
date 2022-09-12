@@ -1,7 +1,6 @@
 /* eslint-disable indent */
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
-import { Prisma } from "@prisma/client"
-import { IsEmail, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from "class-validator"
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator"
 
 export class CreateUserDto {
 
@@ -9,11 +8,6 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  etterem_id: number
 
   @ApiProperty()
   @IsNotEmpty()

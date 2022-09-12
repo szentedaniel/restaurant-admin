@@ -10,8 +10,7 @@ import * as argon from 'argon2'
 export class UsersService {
   constructor(private prisma: PrismaService) { }
 
-
-  async create(dto: CreateUserDto) {
+  async create(dto: CreateUserDto, _user: user) {
     try {
       const hash = await argon.hash(dto.password)
       let role = [dto.role]
@@ -20,7 +19,8 @@ export class UsersService {
         data: {
           ...dto,
           role: role,
-          password: hash
+          password: hash,
+          etterem_id: _user.etterem_id
         }
       })
 
@@ -36,12 +36,15 @@ export class UsersService {
     }
   }
 
-  async findAll(id: number) {
+  async findAll(id: number, userId: number) {
     try {
       const users = await this.prisma.user.findMany({
         where: {
-          etterem_id: id
-        }
+          etterem_id: id,
+          id: {
+            not: userId
+          }
+        },
       })
 
       if (!users.length) throw new NotFoundException(`Users not found with restaurant id: ${id}`)
