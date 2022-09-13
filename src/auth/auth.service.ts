@@ -167,6 +167,34 @@ export class AuthService {
     return response
   }
 
+  async signinAdmin(dto: AuthSignInDto) {
+    // find the user
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email
+      }
+    })
+    // if user does not exist throw exception
+    if (!user) throw new NotFoundException('User not found.')
+
+    if (!user.etterem_id) throw new ForbiddenException()
+
+    // compare passwords
+    const pwMatches = await argon.verify(user.password, dto.password)
+    // if password incorrect throw exception
+    if (!pwMatches) throw new ForbiddenException('Credentials incorrect.')
+
+    // send back the user
+    const convertedUser = this.convertUserData(user)
+    delete user.password
+    const access_token = await this.signToken(user.id, user.email, dto.remember)
+    const response = {
+      user: convertedUser,
+      access_token
+    }
+    return response
+  }
+
   async refreshToken(user: user) {
     // if user does not exist throw exception
     if (!user) throw new NotFoundException('User not found.')

@@ -12,7 +12,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('register')
-  signup(@Body() dto: AuthSignUpDto ) {
+  signup(@Body() dto: AuthSignUpDto) {
     console.log(dto)
 
     return this.authService.signup(dto)
@@ -39,6 +39,14 @@ export class AuthController {
 
     return this.authService.signin(dto)
   }
+
+  @Post('login/admin')
+  signinAdmin(@Body() dto: AuthSignInDto) {
+    console.log(dto)
+
+    return this.authService.signinAdmin(dto)
+  }
+
   @Get('access-token')
   @UseGuards(JwtGuard)
   refreshToken(@GetUser() user: user) {
