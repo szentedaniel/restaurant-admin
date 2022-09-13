@@ -294,6 +294,7 @@ export class AuthService {
       data: {
         displayName: user.name,
         photoURL: '', //assets/images/avatars/brian-hughes.jpg
+        etterem_id: user.etterem_id,
         email: user.email,
         shortcuts: []
       }
