@@ -45,7 +45,7 @@ export class CreateRestaurantDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  nyilvantartas: Prisma.JsonObject | undefined
+  nyitvatartas: Prisma.JsonObject | undefined
 
   @ApiPropertyOptional()
   @IsOptional()
