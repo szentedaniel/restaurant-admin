@@ -44,7 +44,11 @@ export class CategoriesService {
           }
         },
         include: {
-          kategoriak_fordito: true
+          kategoriak_fordito: {
+            include: {
+              languages: true
+            }
+          }
         }
       })
 
@@ -61,7 +65,11 @@ export class CategoriesService {
           id: id
         },
         include: {
-          kategoriak_fordito: true
+          kategoriak_fordito: {
+            include: {
+              languages: true
+            }
+          }
         }
       })
       if (!category) throw new NotFoundException(`Category not found with id: ${id}`)

@@ -47,7 +47,20 @@ export class ProductsService {
           etterem_id: user.etterem_id
         },
         include: {
-          termekek_fordito: true,
+          termekek_fordito: {
+            include: {
+              languages: true
+            }
+          },
+          kategoriak: {
+            include: {
+              kategoriak_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
           termekek_allergenek_rend: {
             include: {
               allergenek: {
@@ -73,7 +86,20 @@ export class ProductsService {
           id: id
         },
         include: {
-          termekek_fordito: true,
+          termekek_fordito: {
+            include: {
+              languages: true
+            }
+          },
+          kategoriak: {
+            include: {
+              kategoriak_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
           termekek_allergenek_rend: {
             include: {
               allergenek: {
