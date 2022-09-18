@@ -20,10 +20,10 @@ export class TablesController {
     return this.tablesService.create(createTableDto, restaurantId)
   }
 
-  @Get('r/:restaurantId')
+  @Get()
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
-  findAll(@Param('restaurantId') restaurantId: number) {
+  findAll(@GetUser('etterem_id') restaurantId: number) {
     return this.tablesService.findAll(+restaurantId)
   }
 
