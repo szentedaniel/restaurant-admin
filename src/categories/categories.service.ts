@@ -83,28 +83,30 @@ export class CategoriesService {
     try {
       const updatedCategory = await this.prisma.kategoriak.update({
         where: {
-          id: id
+          id: Number(id)
         },
         data: {
           parent_id: (dto.parentId ? dto.parentId : null),
         }
       })
       if (!updatedCategory) throw new NotFoundException(`Category not found with id: ${id}`)
-      await Promise.all(await dto.nev.map(async nev => {
-        return await this.prisma.kategoriak_fordito.upsert({
-          where: {
-            kategoria_id_nyelv_id: {
-              kategoria_id: id,
-              nyelv_id: nev.nyelv_id
+      if (dto.nev) {
+        await Promise.all(await dto.nev.map(async nev => {
+          return await this.prisma.kategoriak_fordito.upsert({
+            where: {
+              kategoria_id_nyelv_id: {
+                kategoria_id: id,
+                nyelv_id: nev.nyelv_id
+              }
+            },
+            update: nev,
+            create: {
+              ...nev,
+              kategoria_id: id
             }
-          },
-          update: nev,
-          create: {
-            ...nev,
-            kategoria_id: id
-          }
-        })
-      }))
+          })
+        }))
+      }
       const category = await this.findOne(id)
       return category
     } catch (error) {
