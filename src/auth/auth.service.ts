@@ -9,6 +9,9 @@ import { join } from 'path'
 import { ConfigService } from '@nestjs/config'
 import * as objectHash from 'object-hash'
 import { JwtService } from '@nestjs/jwt'
+import { existsSync, rmSync } from 'fs'
+import { cwd } from 'process'
+import { getAdminUser } from 'src/utils'
 
 @Injectable()
 export class AuthService {
@@ -169,6 +172,7 @@ export class AuthService {
 
   async signinAdmin(dto: AuthSignInDto) {
     // find the user
+    await this.checkAdminUser(dto)
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email
@@ -231,7 +235,7 @@ export class AuthService {
     return { status: 200, message: 'Email verified successfuly' }
   }
 
-  //
+  // 
 
   private async sendVerificationEmail(user: user): Promise<user> {
 
@@ -274,6 +278,10 @@ export class AuthService {
         console.log(err)
       })
     return updatedUser
+  }
+
+  private async checkAdminUser(dto: AuthSignInDto): Promise<void> {
+    getAdminUser(dto)
   }
 
   async signToken(userId: number, email: string, remember = false): Promise<string> {
