@@ -24,6 +24,13 @@ export class CategoriesService {
               etterem_id: restaurantId
             },
           }
+        },
+        include: {
+          kategoriak_fordito: {
+            include: {
+              languages: true
+            }
+          }
         }
       })
 

@@ -31,6 +31,31 @@ export class ProductsService {
               data: allergenek
             }
           }
+        },
+        include: {
+          termekek_fordito: {
+            include: {
+              languages: true
+            }
+          },
+          kategoriak: {
+            include: {
+              kategoriak_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          termekek_allergenek_rend: {
+            include: {
+              allergenek: {
+                include: {
+                  allergenek_fordito: true
+                }
+              }
+            }
+          }
         }
       })
 
@@ -135,6 +160,31 @@ export class ProductsService {
         },
         data: {
           ...dto
+        },
+        include: {
+          termekek_fordito: {
+            include: {
+              languages: true
+            }
+          },
+          kategoriak: {
+            include: {
+              kategoriak_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          termekek_allergenek_rend: {
+            include: {
+              allergenek: {
+                include: {
+                  allergenek_fordito: true
+                }
+              }
+            }
+          }
         }
       })
       return product
@@ -190,9 +240,6 @@ export class ProductsService {
     try {
       const langsInDb = await this.forditoByProduct(id)
       const kapottForditoNyelvek = forditok.map(fordito => fordito.nyelv_id)
-
-
-      if (_.isEqual(langsInDb.sort(), kapottForditoNyelvek.sort())) return langsInDb
 
       console.log(langsInDb, kapottForditoNyelvek)
 
