@@ -12,7 +12,11 @@ export class AllergiesService {
     try {
       const allergies = await this.prisma.allergenek.findMany({
         include: {
-          allergenek_fordito: true
+          allergenek_fordito: {
+            include: {
+              languages: true
+            }
+          }
         }
       })
       return allergies

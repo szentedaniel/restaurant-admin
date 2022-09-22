@@ -57,4 +57,14 @@ export class FileuploadService {
     throw new NotFoundException('Image not found.')
   }
 
+  getProduct(res: Response, filename: string) {
+    const files = readdirSync('./uploads/products')
+    // console.log(files)
+    // console.log(files.includes(filename))
+
+    if (files.includes(filename))
+      return of(res.sendFile(join(process.cwd(), `./uploads/products/${filename}`)))
+    throw new NotFoundException('Image not found.')
+  }
+
 }

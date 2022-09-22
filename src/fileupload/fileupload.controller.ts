@@ -57,6 +57,49 @@ export class FileuploadController {
     return this.fileuploadService.uploadImage(file)
   }
 
+  @Post('product')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Staff, Role.Admin, Role.Owner)
+  @ApiBearerAuth()
+  @ApiSecurity('baseSecurity', [Role.Staff, Role.Admin, Role.Owner])
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'file',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('image', {
+    storage: diskStorage({
+      destination: './uploads/products',
+      filename: (req, file, callback) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+
+        const ext = extname(file.originalname)
+        const filenameWithoutExt = file.originalname.slice(0, file.originalname.indexOf(ext))
+        const filename = `${filenameWithoutExt}-${uniqueSuffix}${ext}`
+
+        callback(null, filename)
+      },
+    }),
+    fileFilter: (req, file, callback) => {
+      if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+        return callback(new ForbiddenException('Only image files are allowed!'), false)
+      }
+      callback(null, true)
+    },
+  }))
+  uploadProductFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
+    console.log('upload from user: ', user)
+
+    return this.fileuploadService.uploadImage(file)
+  }
+
   @Get('image/:filename')
   @ApiParam({
     name: 'filename',
@@ -75,6 +118,15 @@ export class FileuploadController {
   })
   getStaticFile(@Res() res: Response, @Param('filename') filename) {
     return this.fileuploadService.getStaticImage(res, filename)
+  }
+
+  @Get('products/:filename')
+  @ApiParam({
+    name: 'filename',
+    description: 'Name of the image of the product (*on the server*)',
+  })
+  getProduct(@Res() res: Response, @Param('filename') filename) {
+    return this.fileuploadService.getProduct(res, filename)
   }
 
 }

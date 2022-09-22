@@ -21,6 +21,7 @@ export class ProductsService {
           ar_forint: dto.ar_forint,
           ar_euro: (dto.ar_euro ?? null),
           elerheto: dto.elerheto,
+          img_path: dto.img_path ? dto.img_path : null,
           termekek_fordito: {
             createMany: {
               data: dto.fordito
@@ -51,7 +52,11 @@ export class ProductsService {
             include: {
               allergenek: {
                 include: {
-                  allergenek_fordito: true
+                  allergenek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
                 }
               }
             }
@@ -90,7 +95,11 @@ export class ProductsService {
             include: {
               allergenek: {
                 include: {
-                  allergenek_fordito: true
+                  allergenek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
                 }
               }
             }
@@ -129,7 +138,11 @@ export class ProductsService {
             include: {
               allergenek: {
                 include: {
-                  allergenek_fordito: true
+                  allergenek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
                 }
               }
             }
@@ -180,7 +193,11 @@ export class ProductsService {
             include: {
               allergenek: {
                 include: {
-                  allergenek_fordito: true
+                  allergenek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
                 }
               }
             }

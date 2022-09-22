@@ -15,6 +15,10 @@ export class CreateProductDto {
   @IsNumber()
   ar_euro: number | undefined
 
+  @ApiPropertyOptional()
+  @IsString()
+  img_path: string | undefined
+
   @ApiProperty()
   @IsBoolean()
   elerheto: boolean
