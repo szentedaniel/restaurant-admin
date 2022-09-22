@@ -1,3 +1,5 @@
+[![wakatime](https://wakatime.com/badge/github/szentedaniel/restaurant-admin.svg)](https://wakatime.com/badge/github/szentedaniel/restaurant-admin)
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="100" alt="Nest Logo" /></a>
 </p>
