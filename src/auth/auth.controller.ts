@@ -13,21 +13,21 @@ export class AuthController {
 
   @Post('register')
   signup(@Body() dto: AuthSignUpDto) {
-    console.log(dto)
+    // console.log(dto)
 
     return this.authService.signup(dto)
   }
 
   @Post('register/admin')
   signupAdmin(@Body() dto: AuthSignUpAdminDto) {
-    console.log(dto)
+    // console.log(dto)
 
     return this.authService.signupAdmin(dto)
   }
 
   @Post('settings')
   updateSettings(@Body() dto: AuthSignUpAdminDto) {
-    console.log(dto)
+    // console.log(dto)
 
     return this.authService.signupAdmin(dto)
   }
@@ -35,14 +35,14 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   signin(@Body() dto: AuthSignInDto) {
-    console.log(dto)
+    // console.log(dto)
 
     return this.authService.signin(dto)
   }
 
   @Post('login/admin')
   signinAdmin(@Body() dto: AuthSignInDto) {
-    console.log(dto)
+    // console.log(dto)
 
     return this.authService.signinAdmin(dto)
   }
@@ -50,7 +50,7 @@ export class AuthController {
   @Get('access-token')
   @UseGuards(JwtGuard)
   refreshToken(@GetUser() user: user) {
-    console.log(user)
+    // console.log(user)
 
     return this.authService.refreshToken(user)
   }
@@ -58,7 +58,7 @@ export class AuthController {
   @Get('verify')
   @ApiQuery({ name: 'code', type: 'string' })
   verify(@Query('code') code: string) {
-    console.log(code)
+    // console.log(code)
 
     return this.authService.verify(code)
   }

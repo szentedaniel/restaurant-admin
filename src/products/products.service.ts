@@ -258,10 +258,10 @@ export class ProductsService {
       const langsInDb = await this.forditoByProduct(id)
       const kapottForditoNyelvek = forditok.map(fordito => fordito.nyelv_id)
 
-      console.log(langsInDb, kapottForditoNyelvek)
+      // console.log(langsInDb, kapottForditoNyelvek)
 
-      console.log('to remove:', _.difference(langsInDb.sort(), kapottForditoNyelvek.sort()))
-      console.log('to add:', _.difference(kapottForditoNyelvek.sort(), langsInDb.sort()))
+      // console.log('to remove:', _.difference(langsInDb.sort(), kapottForditoNyelvek.sort()))
+      // console.log('to add:', _.difference(kapottForditoNyelvek.sort(), langsInDb.sort()))
       const toRemove = _.difference(langsInDb.sort(), kapottForditoNyelvek.sort())
 
       if (toRemove.length) {

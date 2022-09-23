@@ -26,7 +26,7 @@ export class AuthService {
       let role = [dto.role]
       if (!role) role = ['user']
 
-      console.log(role,)
+      // console.log(role,)
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
@@ -68,7 +68,7 @@ export class AuthService {
       let role = [dto.role]
       if (!role) role = ['user']
 
-      console.log(role,)
+      // console.log(role,)
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,

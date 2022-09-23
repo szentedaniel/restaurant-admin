@@ -52,7 +52,7 @@ export class FileuploadController {
     },
   }))
   uploadFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
-    console.log('upload from user: ', user)
+    // console.log('upload from user: ', user)
 
     return this.fileuploadService.uploadImage(file)
   }
@@ -95,7 +95,7 @@ export class FileuploadController {
     },
   }))
   uploadProductFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
-    console.log('upload from user: ', user)
+    // console.log('upload from user: ', user)
 
     return this.fileuploadService.uploadImage(file)
   }

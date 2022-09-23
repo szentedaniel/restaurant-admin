@@ -54,10 +54,10 @@ export class AllergiesService {
 
       if (_.isEqual(allergiesInDb.sort(), wannaBeAllergies.sort())) return allergiesInDb
 
-      console.log(allergiesInDb, wannaBeAllergies)
+      // console.log(allergiesInDb, wannaBeAllergies)
 
-      console.log('to remove:', _.difference(allergiesInDb.sort(), wannaBeAllergies.sort()))
-      console.log('to add:', _.difference(wannaBeAllergies.sort(), allergiesInDb.sort()))
+      // console.log('to remove:', _.difference(allergiesInDb.sort(), wannaBeAllergies.sort()))
+      // console.log('to add:', _.difference(wannaBeAllergies.sort(), allergiesInDb.sort()))
       const toRemove = _.difference(allergiesInDb.sort(), wannaBeAllergies.sort())
       const toAdd = _.difference(wannaBeAllergies.sort(), allergiesInDb.sort())
 

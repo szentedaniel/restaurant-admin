@@ -49,10 +49,10 @@ export class LanguagesService {
 
       if (_.isEqual(langsInDb.sort(), updateLanguageDto.languages.sort())) return langsInDb
 
-      console.log(langsInDb, updateLanguageDto.languages)
+      // console.log(langsInDb, updateLanguageDto.languages)
 
-      console.log('to remove:', _.difference(langsInDb.sort(), updateLanguageDto.languages.sort()))
-      console.log('to add:', _.difference(updateLanguageDto.languages.sort(), langsInDb.sort()))
+      // console.log('to remove:', _.difference(langsInDb.sort(), updateLanguageDto.languages.sort()))
+      // console.log('to add:', _.difference(updateLanguageDto.languages.sort(), langsInDb.sort()))
       const toRemove = _.difference(langsInDb.sort(), updateLanguageDto.languages.sort())
       const toAdd = _.difference(updateLanguageDto.languages.sort(), langsInDb.sort())
 

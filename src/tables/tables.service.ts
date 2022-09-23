@@ -11,7 +11,7 @@ export class TablesService {
 
   async create(createTableDto: CreateTableDto, restaurantId: number) {
     try {
-      console.log(createTableDto)
+      // console.log(createTableDto)
 
       const table = await this.prisma.asztalok.create({
         data: {
@@ -56,7 +56,7 @@ export class TablesService {
 
   async update(id: number, updateTableDto: UpdateTableDto) {
     try {
-      console.log(id)
+      // console.log(id)
 
       const table = await this.prisma.asztalok.update({
         where: {

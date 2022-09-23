@@ -24,8 +24,6 @@ export class OrdersController {
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
   findAll(@GetUser('etterem_id') restaurantId: number) {
-    console.log(restaurantId)
-
     return this.ordersService.findAllOrdersByRestaurant(restaurantId)
   }
 

@@ -54,10 +54,10 @@ export class ConsumptionTypesService {
 
       if (_.isEqual(typesInDb.sort(), dto.consumptionType.sort())) return typesInDb
 
-      console.log(typesInDb, dto.consumptionType)
+      // console.log(typesInDb, dto.consumptionType)
 
-      console.log('to remove:', _.difference(typesInDb.sort(), dto.consumptionType.sort()))
-      console.log('to add:', _.difference(dto.consumptionType.sort(), typesInDb.sort()))
+      // console.log('to remove:', _.difference(typesInDb.sort(), dto.consumptionType.sort()))
+      // console.log('to add:', _.difference(dto.consumptionType.sort(), typesInDb.sort()))
       const toRemove = _.difference(typesInDb.sort(), dto.consumptionType.sort())
       const toAdd = _.difference(dto.consumptionType.sort(), typesInDb.sort())
 
