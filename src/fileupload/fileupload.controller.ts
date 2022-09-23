@@ -88,7 +88,7 @@ export class FileuploadController {
       },
     }),
     fileFilter: (req, file, callback) => {
-      if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/)) {
         return callback(new ForbiddenException('Only image files are allowed!'), false)
       }
       callback(null, true)

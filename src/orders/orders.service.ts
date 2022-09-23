@@ -28,6 +28,50 @@ export class OrdersService {
               data: dto.termekek
             }
           },
+        },
+        include: {
+          user: true,
+          asztalok: true,
+          fizetesi_mod: {
+            include: {
+              fizetesi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          fogyasztasi_mod: {
+            include: {
+              fogyasztasi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          rendeles_statusz: {
+            include: {
+              rendeles_statusz_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          rendelesek_termekek: {
+            include: {
+              termekek: {
+                include: {
+                  termekek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       })
       return order
@@ -41,6 +85,50 @@ export class OrdersService {
       const orders = await this.prisma.rendelesek.findMany({
         where: {
           etterem_id: restaurantId
+        },
+        include: {
+          user: true,
+          asztalok: true,
+          fizetesi_mod: {
+            include: {
+              fizetesi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          fogyasztasi_mod: {
+            include: {
+              fogyasztasi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          rendeles_statusz: {
+            include: {
+              rendeles_statusz_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          rendelesek_termekek: {
+            include: {
+              termekek: {
+                include: {
+                  termekek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       })
       return orders
@@ -56,11 +144,44 @@ export class OrdersService {
           id: id
         },
         include: {
+          user: true,
+          asztalok: true,
+          fizetesi_mod: {
+            include: {
+              fizetesi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          fogyasztasi_mod: {
+            include: {
+              fogyasztasi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          rendeles_statusz: {
+            include: {
+              rendeles_statusz_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
           rendelesek_termekek: {
             include: {
               termekek: {
                 include: {
-                  termekek_fordito: true
+                  termekek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
                 }
               }
             }
@@ -81,7 +202,51 @@ export class OrdersService {
           id: id
         },
         data: {
-          statusz_id: dto.status_id
+          statusz_id: dto.statusz_id
+        },
+        include: {
+          user: true,
+          asztalok: true,
+          fizetesi_mod: {
+            include: {
+              fizetesi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          fogyasztasi_mod: {
+            include: {
+              fogyasztasi_mod_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          rendeles_statusz: {
+            include: {
+              rendeles_statusz_fordito: {
+                include: {
+                  languages: true
+                }
+              }
+            }
+          },
+          rendelesek_termekek: {
+            include: {
+              termekek: {
+                include: {
+                  termekek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       })
       return order

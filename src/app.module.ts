@@ -18,6 +18,7 @@ import { ConsumptionTypesModule } from './consumption-types/consumption-types.mo
 import { OrdersModule } from './orders/orders.module'
 import { ProductsModule } from './products/products.module'
 import { AllergiesModule } from './allergies/allergies.module'
+import { StatusModule } from './status/status.module';
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { AllergiesModule } from './allergies/allergies.module'
     ProductsModule,
     ConsumptionTypesModule,
     LanguagesModule,
-    AllergiesModule],
+    AllergiesModule,
+    StatusModule],
   controllers: [],
   providers: [AppService,],
 })

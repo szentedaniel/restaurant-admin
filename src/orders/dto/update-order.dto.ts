@@ -5,7 +5,7 @@ import { IsNumber } from 'class-validator'
 export class UpdateOrderDto {
   @ApiProperty()
   @IsNumber()
-  status_id: number
+  statusz_id: number
 }
 
 export class PayRequiredDto {
