@@ -255,7 +255,7 @@ export class AuthService {
         to: user.email, // list of receivers
         // from: 'noreply@nestjs.com', // sender address
         subject: 'Please verify your email.', // Subject line
-        template: 'emailVerification',
+        template: './emailVerification',
         // attachments: [{
         //   filename: 'email.png',
         //   path: join(process.cwd(), `/dist/mail/templates/images/email.png`),
