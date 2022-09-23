@@ -40,6 +40,7 @@ const init = async () => {
       try {
         sh.exec('npx prisma db push --accept-data-loss', { silent: silent }).output
         sh.exec('yarn db_seed --demo=true', { silent: silent }).output
+        sh.exec('npx prisma generate', { silent: silent }).output
         spinner.success()
       } catch (error: any) {
         spinner.error()
