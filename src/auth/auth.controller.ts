@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpCode, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { user } from '@prisma/client'
 import { AuthService } from './auth.service'
 import { GetUser } from './decorator'
-import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto } from './dto'
+import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, ForgotPasswordDto, ResetPasswordDto } from './dto'
 import { JwtGuard } from './guard'
 
 @ApiTags('auth')
@@ -61,5 +61,20 @@ export class AuthController {
     // console.log(code)
 
     return this.authService.verify(code)
+  }
+
+  @Post('forgot-password')
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto)
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto)
+  }
+
+  @Get('reset-password/:resetToken')
+  getValidReset(@Param('resetToken') resetToken: string) {
+    return this.authService.getValidReset(resetToken)
   }
 }

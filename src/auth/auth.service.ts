@@ -1,6 +1,6 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, AuthUpdateSettingsDto } from './dto'
+import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, AuthUpdateSettingsDto, ForgotPasswordDto, ResetPasswordDto } from './dto'
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { MailerService } from '@nestjs-modules/mailer'
@@ -9,9 +9,8 @@ import { join } from 'path'
 import { ConfigService } from '@nestjs/config'
 import * as objectHash from 'object-hash'
 import { JwtService } from '@nestjs/jwt'
-import { existsSync, rmSync } from 'fs'
-import { cwd } from 'process'
 import { getAdminUser } from 'src/utils'
+import passport from 'passport'
 
 @Injectable()
 export class AuthService {
@@ -235,6 +234,47 @@ export class AuthService {
     return { status: 200, message: 'Email verified successfuly' }
   }
 
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: dto.email
+      }
+    })
+
+    if (!user) throw new NotFoundException('Bad credentials')
+
+    const successful = await this.sendForgotPasswordEmail(user)
+
+    if (!successful) throw new BadRequestException('Something went wrong')
+
+    return { status: 200 }
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        forgot: dto.resetToken
+      }
+    })
+
+    if (!user) throw new NotFoundException('User not found')
+    const hash = await argon.hash(dto.password)
+
+    const successful = await this.prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        forgot: null,
+        password: hash
+      }
+    })
+
+    if (!successful) throw new BadRequestException('Something went wrong')
+
+    return { status: 200 }
+  }
+
   // 
 
   private async sendVerificationEmail(user: user): Promise<user> {
@@ -278,6 +318,62 @@ export class AuthService {
         console.log(err)
       })
     return updatedUser
+  }
+
+  private async sendForgotPasswordEmail(user: user): Promise<user> {
+
+    const verifyCode = objectHash(user)
+
+    const updatedUser = await this.prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        forgot: verifyCode,
+        password: ''
+      }
+    })
+
+    this.mailerService
+      .sendMail({
+        to: user.email, // list of receivers
+        // from: 'noreply@nestjs.com', // sender address
+        subject: 'Forgotten Password', // Subject line
+        template: './forgotPassword',
+        // attachments: [{
+        //   filename: 'email.png',
+        //   path: join(process.cwd(), `/dist/mail/templates/images/email.png`),
+        //   cid: 'email'
+        // }],
+        context: {
+          // Data to be sent to template engine.
+          name: user.name,
+          // email: user.email,
+          // image1: join(this.config.get('IMAGES_URL'), 'email.png'),
+          verifyLink: join(this.config.get('DOMAIN_URL'), `reset-password/${verifyCode}`)
+        },
+        // text: 'welcome', // plaintext body
+        // html: '<b>welcome</b>', // HTML body content
+      })
+      .then((msg) => {
+        console.log(msg)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    return updatedUser
+  }
+
+  async getValidReset(resetToken: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        forgot: resetToken
+      }
+    })
+
+    if (!user) throw new NotFoundException('Password reset request not found')
+
+    return { status: 200 }
   }
 
   private async checkAdminUser(dto: AuthSignInDto): Promise<void> {

@@ -116,3 +116,19 @@ export class AuthSignInDto {
   remember?: boolean
 }
 
+export class ForgotPasswordDto {
+  @ApiProperty()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string
+}
+
+export class ResetPasswordDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  resetToken: string
+
+  @ApiProperty()
+  @IsNotEmpty()
+  password: string
+}
