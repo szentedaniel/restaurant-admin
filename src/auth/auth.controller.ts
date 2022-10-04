@@ -1,9 +1,11 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Ip, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
 import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { user } from '@prisma/client'
 import { AuthService } from './auth.service'
 import { GetUser } from './decorator'
 import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, ForgotPasswordDto, ResetPasswordDto } from './dto'
+import GoogleTokenDto from './dto/google-token.dto'
+import RefreshTokenDto from './dto/refresh-token.dto'
 import { JwtGuard } from './guard'
 
 @ApiTags('auth')
@@ -12,47 +14,86 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('register')
-  signup(@Body() dto: AuthSignUpDto) {
+  signup(@Req() request, @Ip() ip: string, @Body() dto: AuthSignUpDto) {
     // console.log(dto)
 
-    return this.authService.signup(dto)
+    return this.authService.signup(dto, {
+      ipAddress: ip,
+      userAgent: request.headers['user-agent'],
+    })
   }
 
   @Post('register/admin')
-  signupAdmin(@Body() dto: AuthSignUpAdminDto) {
+  signupAdmin(@Req() request, @Ip() ip: string, @Body() dto: AuthSignUpAdminDto) {
     // console.log(dto)
 
-    return this.authService.signupAdmin(dto)
+    return this.authService.signupAdmin(dto, {
+      ipAddress: ip,
+      userAgent: request.headers['user-agent'],
+    })
   }
 
-  @Post('settings')
-  updateSettings(@Body() dto: AuthSignUpAdminDto) {
-    // console.log(dto)
+  // @Post('settings')
+  // updateSettings(@Body() dto: AuthSignUpAdminDto) {
+  //   // console.log(dto)
 
-    return this.authService.signupAdmin(dto)
-  }
+  //   return this.authService.signupAdmin(dto)
+  // }
 
   @Post('login')
   @HttpCode(200)
-  signin(@Body() dto: AuthSignInDto) {
+  signin(@Req() request, @Ip() ip: string, @Body() dto: AuthSignInDto) {
     // console.log(dto)
 
-    return this.authService.signin(dto)
+    return this.authService.signin(dto, {
+      ipAddress: ip,
+      userAgent: request.headers['user-agent'],
+    })
   }
 
   @Post('login/admin')
-  signinAdmin(@Body() dto: AuthSignInDto) {
+  signinAdmin(@Req() request, @Ip() ip: string, @Body() dto: AuthSignInDto) {
     // console.log(dto)
 
-    return this.authService.signinAdmin(dto)
+    return this.authService.signinAdmin(dto, {
+      ipAddress: ip,
+      userAgent: request.headers['user-agent'],
+    })
   }
 
-  @Get('access-token')
-  @UseGuards(JwtGuard)
-  refreshToken(@GetUser() user: user) {
+  @Post('/google/login')
+  async googleLogin(
+    @Body() body: GoogleTokenDto,
+    @Req() req,
+    @Ip() ip: string,
+  ): Promise<{ user: Partial<user>, access_token: string; refresh_token: string }> {
+    const result = await this.authService.loginGoogleUser(body.token, {
+      userAgent: req.headers['user-agent'],
+      ipAddress: ip,
+    })
+    if (result) {
+      return result
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Error while logging in with google',
+        },
+        HttpStatus.UNAUTHORIZED,
+      )
+    }
+  }
+
+  @Post('refresh')
+  refreshToken(@Body() body: RefreshTokenDto) {
     // console.log(user)
 
-    return this.authService.refreshToken(user)
+    return this.authService.refresh(body.refreshToken)
+  }
+
+  @Delete('logout')
+  async logout(@Body() body: RefreshTokenDto) {
+    return this.authService.logout(body.refreshToken)
   }
 
   @Get('verify')
