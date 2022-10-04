@@ -4,20 +4,27 @@ import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, AuthUpdateSettingsDto
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { MailerService } from '@nestjs-modules/mailer'
-import { user } from '@prisma/client'
+import { refresh_tokens, user } from '@prisma/client'
 import { join } from 'path'
 import { ConfigService } from '@nestjs/config'
 import * as objectHash from 'object-hash'
 import { JwtService } from '@nestjs/jwt'
 import { getAdminUser } from 'src/utils'
-import passport from 'passport'
+import { Auth, google } from 'googleapis'
+import { throws } from 'assert'
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private readonly mailerService: MailerService, private config: ConfigService, private jwt: JwtService) { }
+  private oauthClient: Auth.OAuth2Client
+
+  constructor(private prisma: PrismaService, private readonly mailerService: MailerService, private config: ConfigService, private jwt: JwtService) {
+    const clientId = this.config.get('GOOGLE_CLIENT_ID')
+    const clientSecret = this.config.get('GOOGLE_CLIENT_SECRET')
+    this.oauthClient = new google.auth.OAuth2(clientId, clientSecret)
+  }
 
 
-  async signup(dto: AuthSignUpDto) {
+  async signup(dto: AuthSignUpDto, values: { userAgent: string; ipAddress: string }) {
     // generate password hash
     const hash = await argon.hash(dto.password)
     // save user to db
@@ -41,10 +48,11 @@ export class AuthService {
 
       delete registeredUser.password
 
-      const access_token = await this.signToken(user.id, user.email)
+      const tokens = await this.newRefreshAndAccessToken(user, values)
       const response = {
         user: convertedUser,
-        access_token
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
       }
 
       return response
@@ -59,7 +67,7 @@ export class AuthService {
     }
   }
 
-  async signupAdmin(dto: AuthSignUpAdminDto) {
+  async signupAdmin(dto: AuthSignUpAdminDto, values: { userAgent: string; ipAddress: string }) {
     // generate password hash
     const hash = await argon.hash(dto.password)
     // save user to db
@@ -94,10 +102,11 @@ export class AuthService {
 
       delete registeredUser.password
 
-      const access_token = await this.signToken(user.id, user.email)
+      const tokens = await this.newRefreshAndAccessToken(user, values)
       const response = {
         user: convertedUser,
-        access_token
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
       }
 
       return response
@@ -143,7 +152,7 @@ export class AuthService {
     }
   }
 
-  async signin(dto: AuthSignInDto) {
+  async signin(dto: AuthSignInDto, values: { userAgent: string; ipAddress: string }) {
     // find the user
     const user = await this.prisma.user.findUnique({
       where: {
@@ -161,15 +170,16 @@ export class AuthService {
     // send back the user
     const convertedUser = this.convertUserData(user)
     delete user.password
-    const access_token = await this.signToken(user.id, user.email, dto.remember)
+    const tokens = await this.newRefreshAndAccessToken(user, values)
     const response = {
       user: convertedUser,
-      access_token
+      access_token: tokens.accessToken,
+      refresh_token: tokens.refreshToken
     }
     return response
   }
 
-  async signinAdmin(dto: AuthSignInDto) {
+  async signinAdmin(dto: AuthSignInDto, values: { userAgent: string; ipAddress: string }) {
     // find the user
     await this.checkAdminUser(dto)
     const user = await this.prisma.user.findUnique({
@@ -190,28 +200,61 @@ export class AuthService {
     // send back the user
     const convertedUser = this.convertUserData(user)
     delete user.password
-    const access_token = await this.signToken(user.id, user.email, dto.remember)
+    const tokens = await this.newRefreshAndAccessToken(user, values)
     const response = {
       user: convertedUser,
-      access_token
+      access_token: tokens.accessToken,
+      refresh_token: tokens.refreshToken
     }
     return response
   }
 
-  async refreshToken(user: user) {
-    // if user does not exist throw exception
-    if (!user) throw new NotFoundException('User not found.')
-
-    // send back the user
-    const convertedUser = this.convertUserData(user)
-    delete user.password
-    const access_token = await this.signToken(user.id, user.email)
-    const response = {
-      user: convertedUser,
-      access_token
+  async loginGoogleUser(token: string, values: { userAgent: string, ipAddress: string }): Promise<{ user: Partial<user>, access_token: string, refresh_token: string } | undefined> {
+    const tokenInfo = await this.oauthClient.getTokenInfo(token)
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: tokenInfo.email
+      }
+    })
+    if (user) {
+      const tokens = await this.newRefreshAndAccessToken(user, values)
+      return {
+        user: this.convertUserData(user),
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
+      }
     }
-    return response
+    return undefined
   }
+
+  async logout(refreshStr): Promise<void> {
+    const refreshToken = await this.retrieveRefreshToken(refreshStr)
+
+    if (!refreshToken) {
+      return
+    }
+    // delete refreshtoken from db
+    await this.prisma.refresh_tokens.delete({
+      where: {
+        id: refreshToken.id
+      }
+    })
+  }
+
+  // async refreshToken(user: user) {
+  //   // if user does not exist throw exception
+  //   if (!user) throw new NotFoundException('User not found.')
+
+  //   // send back the user
+  //   const convertedUser = this.convertUserData(user)
+  //   delete user.password
+  //   const access_token = await this.signAccessToken(user.id, user.email)
+  //   const response = {
+  //     user: convertedUser,
+  //     access_token
+  //   }
+  //   return response
+  // }
 
   async verify(code: string) {
     const user = await this.prisma.user.findUnique({
@@ -380,15 +423,85 @@ export class AuthService {
     getAdminUser(dto)
   }
 
-  async signToken(userId: number, email: string, remember = false): Promise<string> {
-    const payload = {
-      sub: userId,
-      email
+  async refresh(refreshStr: string): Promise<{ user: any, access_token: string } | undefined> {
+    const refreshToken = await this.retrieveRefreshToken(refreshStr)
+
+    if (!refreshToken) {
+      return undefined
     }
-    return this.jwt.signAsync(payload, {
-      expiresIn: remember === true ? '100y' : '1d',
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: refreshToken.user_id
+      }
+    })
+    if (!user) {
+      return undefined
+    }
+
+    const convertedUser = this.convertUserData(user)
+    delete user.password
+
+    return {
+      user: convertedUser,
+      access_token: this.signAccessToken(refreshToken.user_id)
+    }
+  }
+
+  private retrieveRefreshToken(
+    refreshStr: string,
+  ): Promise<refresh_tokens | undefined> {
+    try {
+      const decoded = this.jwt.verify(refreshStr, { secret: this.config.get('REFRESH_SECRET') })
+
+      if (typeof decoded === 'string') {
+        return undefined
+      }
+      return Promise.resolve(
+        this.prisma.refresh_tokens.findFirst({
+          where: {
+            id: decoded.id
+          }
+        })
+        ,
+      )
+    } catch (e) {
+      return undefined
+    }
+  }
+
+  // TOKEN FUNCTIONS 
+
+  private async newRefreshAndAccessToken(
+    user: user,
+    values: { userAgent: string; ipAddress: string },
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const refreshObject = await this.prisma.refresh_tokens.create({
+      data: {
+        user_id: user.id,
+        user_agent: values.userAgent,
+        ip_address: values.ipAddress
+      }
+    })
+
+    return {
+      refreshToken: this.signRefreshToken(refreshObject),
+      accessToken: this.signAccessToken(user.id),
+    }
+  }
+
+  private signAccessToken(userId: number, remember = false): string {
+    const payload = {
+      sub: userId
+    }
+    return this.jwt.sign(payload, {
+      expiresIn: remember === true ? '100y' : '30s',
       secret: this.config.get('JWT_SECRET')
     })
+  }
+
+  private signRefreshToken(data: Partial<refresh_tokens>): string {
+    return this.jwt.sign({ ...data }, { secret: this.config.get('REFRESH_SECRET') })
   }
 
   convertUserData(user: user) {

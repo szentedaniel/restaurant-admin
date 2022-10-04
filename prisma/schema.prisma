@@ -262,6 +262,7 @@ model user {
   foglalasok       foglalasok[]
   kedvenc_ettermek kedvenc_ettermek[]
   kedvenc_termekek kedvenc_termekek[]
+  refresh_tokens   refresh_tokens[]
   rendelesek       rendelesek[]
   settings         settings?
 
@@ -428,4 +429,14 @@ model fizetesi_mod_fordito {
 
   @@id([fizetesi_mod_id, nyelv_id])
   @@index([nyelv_id], map: "fk_fizetesi_mod_fordito_lang")
+}
+
+model refresh_tokens {
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  user_agent String  @db.Text
+  ip_address String? @db.VarChar(100)
+  user       user    @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_refresh_tokens_user")
+
+  @@index([user_id], map: "fk_refresh_tokens_user")
 }
