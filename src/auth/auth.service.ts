@@ -495,7 +495,7 @@ export class AuthService {
       sub: userId
     }
     return this.jwt.sign(payload, {
-      expiresIn: remember === true ? '100y' : '30s',
+      expiresIn: remember === true ? '100y' : '15m',
       secret: this.config.get('JWT_SECRET')
     })
   }

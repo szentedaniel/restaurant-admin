@@ -22,7 +22,6 @@ model asztalok {
   elerheto   Boolean      @default(true)
   kod        String       @unique(map: "unq_asztalok") @db.VarChar(45)
   nev        String       @db.VarChar(255)
-  ettermek   ettermek     @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_asztalok_etteremId_ettermek")
   foglalasok foglalasok[]
   rendelesek rendelesek[]
 
@@ -110,7 +109,6 @@ model ettermek {
   city_name                String                     @db.VarChar(255)
   lat                      Float?
   lng                      Float?
-  asztalok                 asztalok[]
   etterem_kategoria_rend   etterem_kategoria_rend[]
   etterem_konyhatipus_rend etterem_konyhatipus_rend[]
   etterem_nyelv            etterem_nyelv[]
@@ -187,10 +185,10 @@ model rendelesek {
   fizetes_most        Boolean
   fizetesi_mod_id     Int?
   fogyasztasi_mod_id  Int
-  asztalok            asztalok?             @relation(fields: [asztal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_asztalId_asztalok")
   ettermek            ettermek              @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_etteremId_ettermek")
   rendeles_statusz    rendeles_statusz      @relation(fields: [statusz_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_statuszId_rendelesStatusz")
   user                user                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_userId_user")
+  asztalok            asztalok?             @relation(fields: [asztal_id], references: [id], onUpdate: NoAction, map: "fk_rendelesek_asztalid_asztalok")
   fizetesi_mod        fizetesi_mod?         @relation(fields: [fizetesi_mod_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rendelesek_fizetesi_mod")
   fogyasztasi_mod     fogyasztasi_mod       @relation(fields: [fogyasztasi_mod_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rendelesek_fogyasztasi_mod")
   rendelesek_termekek rendelesek_termekek[]
