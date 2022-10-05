@@ -58,11 +58,17 @@ MAIL_SENDER='"example-sender" <noreply@example.com>'
 
 # Domain settings
 PORT=3001
-DOMAIN_URL=http://localhost:${PORT}/api
+DOMAIN_URL=http://localhost:${PORT}/
+API_URL=${DOMAIN_URL}api
 IMAGES_URL=${DOMAIN_URL}/files/image
 
 # JWT 
-JWT_SECRET='super-secret'
+JWT_SECRET=DA31BADC4CBA83B6
+REFRESH_SECRET=4BC384776747AA6CFD5CCB86673AB
+
+# GOOGLE AUTH
+GOOGLE_CLIENT_ID=''
+GOOGLE_CLIENT_SECRET=''
 ```
 
 ## Running the app
