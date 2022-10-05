@@ -21,6 +21,7 @@ model asztalok {
   ferohely   Int
   elerheto   Boolean      @default(true)
   kod        String       @unique(map: "unq_asztalok") @db.VarChar(45)
+  nev        String       @db.VarChar(255)
   ettermek   ettermek     @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_asztalok_etteremId_ettermek")
   foglalasok foglalasok[]
   rendelesek rendelesek[]

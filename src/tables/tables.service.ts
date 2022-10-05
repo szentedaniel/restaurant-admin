@@ -15,6 +15,7 @@ export class TablesService {
 
       const table = await this.prisma.asztalok.create({
         data: {
+          nev: createTableDto.nev,
           ferohely: createTableDto.ferohely,
           elerheto: createTableDto.elerheto,
           etterem_id: restaurantId,
