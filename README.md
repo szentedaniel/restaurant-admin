@@ -4,8 +4,6 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="100" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 <!---
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
@@ -25,9 +23,9 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 ## Description
 
-This template build on top of the [Nest](https://github.com/nestjs/nest) framework.
+This application is bootstrapped with [Nest](https://github.com/nestjs/nest) framework.
 
-## Contains
+## Added features
 
 - [x] JWT Authentication
 - [x] Role Based access control
@@ -39,7 +37,7 @@ This template build on top of the [Nest](https://github.com/nestjs/nest) framewo
 ## Installation
 
 ```bash
-$ yarn
+yarn
 ```
 
 ## Environment variables
@@ -71,6 +69,10 @@ GOOGLE_CLIENT_ID=''
 GOOGLE_CLIENT_SECRET=''
 ```
 
+## Setup & demo database
+
+Run `yarn db_init` to initialize the database. If you want to seed the database with demo records run `yarn db_demo`.
+
 ## Running the app
 
 ```bash
@@ -83,20 +85,3 @@ $ yarn start:dev
 # production mode
 $ yarn start:prod
 ```
-
-## Test
-
-```bash
-# unit tests
-$ yarn test
-
-# e2e tests
-$ yarn test:e2e
-
-# test coverage
-$ yarn test:cov
-```
-
-## License
-
-Nest is [MIT licensed](LICENSE).

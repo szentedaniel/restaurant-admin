@@ -1,22 +1,30 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Ip, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
-import { ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { user } from '@prisma/client'
 import { AuthService } from './auth.service'
 import { GetUser } from './decorator'
 import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, ForgotPasswordDto, ResetPasswordDto } from './dto'
+import { emailVerifyDto, defaultAuthResponseDto, ErrorResonseDto } from './dto/authRespose.dto'
 import GoogleTokenDto from './dto/google-token.dto'
 import RefreshTokenDto from './dto/refresh-token.dto'
 import { JwtGuard } from './guard'
 
 @ApiTags('auth')
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('register')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: defaultAuthResponseDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
   signup(@Req() request, @Ip() ip: string, @Body() dto: AuthSignUpDto) {
-    // console.log(dto)
-
     return this.authService.signup(dto, {
       ipAddress: ip,
       userAgent: request.headers['user-agent'],
@@ -24,24 +32,36 @@ export class AuthController {
   }
 
   @Post('register/admin')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: defaultAuthResponseDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
   signupAdmin(@Req() request, @Ip() ip: string, @Body() dto: AuthSignUpAdminDto) {
-    // console.log(dto)
-
     return this.authService.signupAdmin(dto, {
       ipAddress: ip,
       userAgent: request.headers['user-agent'],
     })
   }
 
-  // @Post('settings')
-  // updateSettings(@Body() dto: AuthSignUpAdminDto) {
-  //   // console.log(dto)
-
-  //   return this.authService.signupAdmin(dto)
-  // }
-
   @Post('login')
   @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: defaultAuthResponseDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
   signin(@Req() request, @Ip() ip: string, @Body() dto: AuthSignInDto) {
     // console.log(dto)
 
@@ -52,6 +72,19 @@ export class AuthController {
   }
 
   @Post('login/admin')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: defaultAuthResponseDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
   signinAdmin(@Req() request, @Ip() ip: string, @Body() dto: AuthSignInDto) {
     // console.log(dto)
 
@@ -62,6 +95,19 @@ export class AuthController {
   }
 
   @Post('/google/login')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: defaultAuthResponseDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
   async googleLogin(
     @Body() body: GoogleTokenDto,
     @Req() req,
@@ -85,9 +131,12 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: defaultAuthResponseDto
+  })
   refreshToken(@Body() body: RefreshTokenDto) {
-    // console.log(user)
-
     return this.authService.refresh(body.refreshToken)
   }
 
@@ -97,10 +146,17 @@ export class AuthController {
   }
 
   @Get('verify')
+  @HttpCode(200)
   @ApiQuery({ name: 'code', type: 'string' })
+  @ApiResponse({
+    status: 200,
+    type: emailVerifyDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
   verify(@Query('code') code: string) {
-    // console.log(code)
-
     return this.authService.verify(code)
   }
 

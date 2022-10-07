@@ -2,27 +2,30 @@ import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/co
 import { OrdersService } from './orders.service'
 import { CreateOrderDto } from './dto/create-order.dto'
 import { myCartDto, PayRequiredDto, UpdateOrderDto } from './dto/update-order.dto'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { GetUser, Roles } from 'src/auth/decorator'
 import { user } from '@prisma/client'
 import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { Role } from 'src/auth/enums'
 
 @ApiTags('orders')
-@Controller('api/orders')
+@Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: `Must log in` })
   create(@Body() createOrderDto: CreateOrderDto, @GetUser() user: user) {
     return this.ordersService.createOrder(createOrderDto, user)
   }
 
   @Get()
   @ApiBearerAuth()
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Staff, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
   findAll(@GetUser('etterem_id') restaurantId: number) {
     return this.ordersService.findAllOrdersByRestaurant(restaurantId)
   }
@@ -30,6 +33,8 @@ export class OrdersController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
+  @Roles(Role.Staff, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id)
   }
@@ -37,6 +42,8 @@ export class OrdersController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
+  @Roles(Role.Staff, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(id, updateOrderDto)
   }
@@ -45,6 +52,7 @@ export class OrdersController {
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.User)
+  @ApiOperation({ summary: `ReqRole: ${[Role.User]}` })
   pay(@Body() dto: PayRequiredDto, @GetUser() user: user) {
     return this.ordersService.payReq(dto, user)
   }
@@ -53,6 +61,7 @@ export class OrdersController {
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.User)
+  @ApiOperation({ summary: `ReqRole: ${[Role.User]}` })
   myCart(@Body() dto: myCartDto, @GetUser() user: user) {
     return this.ordersService.myCart(dto, user)
   }

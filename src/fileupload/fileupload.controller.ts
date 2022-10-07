@@ -1,6 +1,6 @@
 import { Controller, ForbiddenException, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiSecurity, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiSecurity, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
@@ -10,15 +10,15 @@ import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { FileuploadService } from './fileupload.service'
 
 @ApiTags('files')
-@Controller('api/files')
+@Controller('files')
 export class FileuploadController {
   constructor(private readonly fileuploadService: FileuploadService) { }
 
   @Post('upload')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Staff, Role.Admin, Role.Owner)
+  @Roles(Role.Staff, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
   @ApiBearerAuth()
-  @ApiSecurity('baseSecurity', [Role.Staff, Role.Admin, Role.Owner])
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -59,9 +59,9 @@ export class FileuploadController {
 
   @Post('product')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Staff, Role.Admin, Role.Owner)
+  @Roles(Role.Staff, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
   @ApiBearerAuth()
-  @ApiSecurity('baseSecurity', [Role.Staff, Role.Admin, Role.Owner])
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {

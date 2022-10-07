@@ -12,7 +12,11 @@ export class ConsumptionTypesService {
     try {
       const type = await this.prisma.fogyasztasi_mod.findMany({
         include: {
-          fogyasztasi_mod_fordito: true
+          fogyasztasi_mod_fordito: {
+            include: {
+              languages: true
+            }
+          }
         }
       })
       if (!type.length) throw new NotFoundException('Not found Consumption types')

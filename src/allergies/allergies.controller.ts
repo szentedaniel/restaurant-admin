@@ -1,13 +1,19 @@
 import { Controller, Get } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AllergiesService } from './allergies.service'
+import { defaultAllergyResponseDto } from './dto/response-allergy.dto'
 
 @ApiTags('allergies')
-@Controller('api/allergies')
+@Controller('allergies')
 export class AllergiesController {
   constructor(private readonly allergiesService: AllergiesService) { }
 
   @Get()
+  @ApiResponse({
+    isArray: true,
+    status: 200,
+    type: defaultAllergyResponseDto
+  })
   findAll() {
     return this.allergiesService.findAll()
   }

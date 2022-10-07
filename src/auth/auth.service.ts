@@ -11,7 +11,7 @@ import * as objectHash from 'object-hash'
 import { JwtService } from '@nestjs/jwt'
 import { getAdminUser } from 'src/utils'
 import { Auth, google } from 'googleapis'
-import { throws } from 'assert'
+import { convertedUserDto } from './dto/authRespose.dto'
 
 @Injectable()
 export class AuthService {
@@ -209,7 +209,7 @@ export class AuthService {
     return response
   }
 
-  async loginGoogleUser(token: string, values: { userAgent: string, ipAddress: string }): Promise<{ user: Partial<user>, access_token: string, refresh_token: string } | undefined> {
+  async loginGoogleUser(token: string, values: { userAgent: string, ipAddress: string }): Promise<{ user: convertedUserDto, access_token: string, refresh_token: string } | undefined> {
     const tokenInfo = await this.oauthClient.getTokenInfo(token)
     const user = await this.prisma.user.findFirst({
       where: {
@@ -240,21 +240,6 @@ export class AuthService {
       }
     })
   }
-
-  // async refreshToken(user: user) {
-  //   // if user does not exist throw exception
-  //   if (!user) throw new NotFoundException('User not found.')
-
-  //   // send back the user
-  //   const convertedUser = this.convertUserData(user)
-  //   delete user.password
-  //   const access_token = await this.signAccessToken(user.id, user.email)
-  //   const response = {
-  //     user: convertedUser,
-  //     access_token
-  //   }
-  //   return response
-  // }
 
   async verify(code: string) {
     const user = await this.prisma.user.findUnique({
@@ -423,7 +408,7 @@ export class AuthService {
     getAdminUser(dto)
   }
 
-  async refresh(refreshStr: string): Promise<{ user: any, access_token: string } | undefined> {
+  async refresh(refreshStr: string): Promise<{ user: convertedUserDto, access_token: string } | undefined> {
     const refreshToken = await this.retrieveRefreshToken(refreshStr)
 
     if (!refreshToken) {

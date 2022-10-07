@@ -3,19 +3,20 @@ import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { user } from '@prisma/client'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { Role } from 'src/auth/enums'
 import { GetUser, Roles } from 'src/auth/decorator'
 
 @ApiTags('users')
-@Controller('api/users')
+@Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin]}` })
   @ApiBearerAuth()
   create(@Body() createUserDto: CreateUserDto, @GetUser() user: user) {
     return this.usersService.create(createUserDto, user)
@@ -24,6 +25,7 @@ export class UsersController {
   @Get('restaurant')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin]}` })
   @ApiBearerAuth()
   findAll(@GetUser('etterem_id') id: string, @GetUser('id') userId: string) {
     return this.usersService.findAll(+id, +userId)
@@ -32,6 +34,7 @@ export class UsersController {
   @Get(':id')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin]}` })
   @ApiBearerAuth()
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id)
@@ -40,6 +43,7 @@ export class UsersController {
   @Patch(':id')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin]}` })
   @ApiBearerAuth()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto)
@@ -48,6 +52,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin]}` })
   @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id)

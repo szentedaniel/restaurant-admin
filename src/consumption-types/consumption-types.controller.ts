@@ -1,9 +1,10 @@
-import { Controller, Get} from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { Controller, Get } from '@nestjs/common'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ConsumptionTypesService } from './consumption-types.service'
+import { defaultConsumptionTypeResponseDto } from './dto/response-consumption-type.dto'
 
 @ApiTags('consumptionTypes')
-@Controller('api/consumptionTypes')
+@Controller('consumptionTypes')
 export class ConsumptionTypesController {
   constructor(private readonly consumptionTypesService: ConsumptionTypesService) { }
 
@@ -16,6 +17,11 @@ export class ConsumptionTypesController {
   // }
 
   @Get()
+  @ApiResponse({
+    isArray: true,
+    status: 200,
+    type: defaultConsumptionTypeResponseDto
+  })
   findAll() {
     return this.consumptionTypesService.allConsumptionType()
   }

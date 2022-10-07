@@ -1,31 +1,19 @@
 import { Controller, Get, } from '@nestjs/common'
 import { LanguagesService } from './languages.service'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
+import { defaultLanguagesResponseDto } from './dto/response-language.dto'
 
 @ApiTags('languages')
-@Controller('api/languages')
+@Controller('languages')
 export class LanguagesController {
   constructor(private readonly languagesService: LanguagesService) { }
 
   @Get()
-  // @ApiBearerAuth()
-  // @UseGuards(JwtGuard)
+  @ApiResponse({
+    status: 200,
+    type: defaultLanguagesResponseDto
+  })
   allLanguages() {
     return this.languagesService.allLanguages()
   }
-
-  // @Get(':restaurantId')
-  // // @ApiBearerAuth()
-  // // @UseGuards(JwtGuard)
-  // supportedLanguagesByRestaurant(@Param('restaurantId') id: string) {
-  //   return this.languagesService.supportedLanguagesByRestaurant(+id)
-  // }
-
-  // @Patch(':restaurantId')
-  // // @ApiBearerAuth()
-  // // @UseGuards(JwtGuard)
-  // updateSupportedLanguagesByRestaurant(@Param('restaurantId') id: string, @Body() updateLanguageDto: UpdateLanguageDto) {
-  //   return this.languagesService.updateLanguagesByRestaurantId(+id, updateLanguageDto)
-  // }
-
 }

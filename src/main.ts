@@ -16,6 +16,8 @@ async function bootstrap() {
     whitelist: false
   }))
 
+  app.setGlobalPrefix('/api')
+
   // Swagger
   const config = new DocumentBuilder()
     .setTitle('Api documentation')
