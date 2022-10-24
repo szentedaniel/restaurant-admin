@@ -275,7 +275,7 @@ export class AuthService {
 
     if (!successful) throw new BadRequestException('Something went wrong')
 
-    return { status: 200 }
+    return { statusCode: 200, message: 'Email sent' }
   }
 
   async resetPassword(dto: ResetPasswordDto) {

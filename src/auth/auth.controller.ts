@@ -4,7 +4,7 @@ import { user } from '@prisma/client'
 import { AuthService } from './auth.service'
 import { GetUser } from './decorator'
 import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, ForgotPasswordDto, ResetPasswordDto } from './dto'
-import { emailVerifyDto, defaultAuthResponseDto, ErrorResonseDto } from './dto/authRespose.dto'
+import { emailVerifyDto, defaultAuthResponseDto, ErrorResonseDto, ForgotPasswordSuccessfulResponseDto } from './dto/authRespose.dto'
 import GoogleTokenDto from './dto/google-token.dto'
 import RefreshTokenDto from './dto/refresh-token.dto'
 import { JwtGuard } from './guard'
@@ -161,6 +161,15 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: ForgotPasswordSuccessfulResponseDto
+  })
+  @ApiResponse({
+    status: 400,
+    type: ErrorResonseDto
+  })
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.authService.forgotPassword(dto)
   }
