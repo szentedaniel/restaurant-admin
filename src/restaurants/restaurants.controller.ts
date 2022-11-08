@@ -13,6 +13,7 @@ import { user } from '@prisma/client'
 export class RestaurantsController {
   constructor(private readonly restaurantsService: RestaurantsService) { }
 
+  @ApiTags('mobile')
   @Get()
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
@@ -29,6 +30,7 @@ export class RestaurantsController {
     return this.restaurantsService.findOne(+id, user)
   }
 
+  @ApiTags('mobile')
   @Get(':id/products')
   @UseGuards(JwtGuard)
   @ApiBearerAuth()

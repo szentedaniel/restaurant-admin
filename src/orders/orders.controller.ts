@@ -15,6 +15,7 @@ import { ErrorResonseDto } from 'src/auth/dto/authRespose.dto'
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
+  @ApiTags('mobile')
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
@@ -50,6 +51,7 @@ export class OrdersController {
     return this.ordersService.update(id, updateOrderDto)
   }
 
+  @ApiTags('mobile')
   @Post('payReq')
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
@@ -75,6 +77,7 @@ export class OrdersController {
     return this.ordersService.payReq(dto, user)
   }
 
+  @ApiTags('mobile')
   @Post('myCart')
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)

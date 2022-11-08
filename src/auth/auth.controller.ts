@@ -14,6 +14,7 @@ import { JwtGuard } from './guard'
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
+  @ApiTags('mobile')
   @Post('register')
   @HttpCode(200)
   @ApiResponse({
@@ -48,6 +49,7 @@ export class AuthController {
     })
   }
 
+  @ApiTags('mobile')
   @Post('login')
   @HttpCode(200)
   @ApiResponse({
@@ -94,6 +96,7 @@ export class AuthController {
     })
   }
 
+  @ApiTags('mobile')
   @Post('/google/login')
   @HttpCode(200)
   @ApiResponse({
@@ -160,6 +163,7 @@ export class AuthController {
     return this.authService.verify(code)
   }
 
+  @ApiTags('mobile')
   @Post('forgot-password')
   @HttpCode(200)
   @ApiResponse({

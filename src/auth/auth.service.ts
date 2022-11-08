@@ -29,8 +29,7 @@ export class AuthService {
     const hash = await argon.hash(dto.password)
     // save user to db
     try {
-      let role = [dto.role]
-      if (!role) role = ['user']
+      const role = ['user']
 
       // console.log(role,)
       const user = await this.prisma.user.create({
