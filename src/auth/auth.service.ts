@@ -38,6 +38,7 @@ export class AuthService {
           name: dto.name,
           role: role,
           password: hash,
+          phone: dto.phone
         }
       })
 
