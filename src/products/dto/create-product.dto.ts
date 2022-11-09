@@ -16,7 +16,6 @@ export class CreateProductDto {
   ar_euro: number | undefined
 
   @ApiPropertyOptional()
-  @IsString()
   img_path: string | undefined
 
   @ApiProperty()
