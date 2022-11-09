@@ -98,7 +98,7 @@ model ettermek {
   id                       Int                        @id @default(autoincrement())
   address                  String                     @db.VarChar(255)
   name                     String                     @db.VarChar(155)
-  adoszam                  Float                      @db.Float
+  adoszam                  String                     @db.MediumText
   telefon                  String?                    @db.VarChar(45)
   email                    String?                    @db.VarChar(255)
   nyitvatartas             Json?
@@ -108,6 +108,7 @@ model ettermek {
   ceg                      String?                    @db.VarChar(255)
   city_name                String                     @db.VarChar(255)
   lat                      Float?
+  leiras                   String?                    @db.Text
   lng                      Float?
   etterem_kategoria_rend   etterem_kategoria_rend[]
   etterem_konyhatipus_rend etterem_konyhatipus_rend[]
@@ -255,8 +256,8 @@ model user {
   created_at       DateTime           @default(now()) @db.Timestamp(0)
   updated_at       DateTime           @default(now()) @db.Timestamp(0)
   verify           String?            @unique
-  role             Json
   forgot           String?            @db.VarChar(255)
+  role             Json
   ettermek         ettermek?          @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_etteremId_ettermek")
   foglalasok       foglalasok[]
   kedvenc_ettermek kedvenc_ettermek[]

@@ -85,7 +85,7 @@ export class AuthService {
           ettermek: {
             create: {
               name: dto.restaurantName,
-              adoszam: Number(dto.taxNumber),
+              adoszam: dto.taxNumber,
               ceg: dto.companyName,
               city_name: dto.cityName,
               address: dto.address,

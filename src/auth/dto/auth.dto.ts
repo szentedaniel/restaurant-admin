@@ -51,7 +51,7 @@ export class AuthSignUpAdminDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  taxNumber: number
+  taxNumber: string
 
   @ApiPropertyOptional()
   @IsString()

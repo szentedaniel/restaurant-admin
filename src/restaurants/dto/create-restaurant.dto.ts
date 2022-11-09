@@ -20,10 +20,14 @@ export class CreateRestaurantDto {
   @IsNotEmpty()
   name: string
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  leiras: string | undefined
+
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  adoszam: number
+  adoszam: string
 
   @ApiProperty()
   @IsNumber()
