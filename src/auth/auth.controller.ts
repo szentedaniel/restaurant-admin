@@ -4,7 +4,7 @@ import { user } from '@prisma/client'
 import { AuthService } from './auth.service'
 import { GetUser } from './decorator'
 import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, ForgotPasswordDto, ResetPasswordDto } from './dto'
-import { emailVerifyDto, defaultAuthResponseDto, ErrorResonseDto } from './dto/authRespose.dto'
+import { emailVerifyDto, defaultAuthResponseDto, ErrorResonseDto, ForgotPasswordSuccessfulResponseDto } from './dto/authRespose.dto'
 import GoogleTokenDto from './dto/google-token.dto'
 import RefreshTokenDto from './dto/refresh-token.dto'
 import { JwtGuard } from './guard'
@@ -14,6 +14,7 @@ import { JwtGuard } from './guard'
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
+  @ApiTags('mobile')
   @Post('register')
   @HttpCode(200)
   @ApiResponse({
@@ -48,6 +49,7 @@ export class AuthController {
     })
   }
 
+  @ApiTags('mobile')
   @Post('login')
   @HttpCode(200)
   @ApiResponse({
@@ -94,6 +96,7 @@ export class AuthController {
     })
   }
 
+  @ApiTags('mobile')
   @Post('/google/login')
   @HttpCode(200)
   @ApiResponse({
@@ -160,7 +163,17 @@ export class AuthController {
     return this.authService.verify(code)
   }
 
+  @ApiTags('mobile')
   @Post('forgot-password')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: ForgotPasswordSuccessfulResponseDto
+  })
+  @ApiResponse({
+    status: 400,
+    type: ErrorResonseDto
+  })
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.authService.forgotPassword(dto)
   }

@@ -8,7 +8,7 @@ import { JwtGuard } from 'src/auth/guard'
 import { defaultKedvencEtteremResponseDto, defaultKedvencTermekResponseDto } from './dto/response-favorite.dto'
 import { ErrorResonseDto } from 'src/auth/dto/authRespose.dto'
 
-@ApiTags('favorites')
+@ApiTags('favorites', 'mobile')
 @Controller('favorites')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) { }
@@ -48,6 +48,27 @@ export class FavoritesController {
   })
   findAllProdFav(@GetUser() user: user) {
     return this.favoritesService.findAllProdFav(user)
+  }
+
+  @Get('productsByRestaurant/:restaurantId')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Must log in' })
+  @ApiResponse({
+    isArray: true,
+    status: 200,
+    type: defaultKedvencTermekResponseDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
+  findAllProdFavByRestaurant(@Param('restaurantId') id: string, @GetUser() user: user) {
+    return this.favoritesService.findAllProdFavByRestaurant(+id, user)
   }
 
   @Delete('product/:id')

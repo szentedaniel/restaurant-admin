@@ -18,9 +18,12 @@ export class AuthSignUpDto {
   @IsNotEmpty()
   name: string
 
-  @ApiPropertyOptional({ enum: ['owner', 'admin', 'staff', 'user'], default: 'user' })
-  @IsOptional()
-  role: string | undefined
+  // @ApiPropertyOptional({ enum: ['owner', 'admin', 'staff', 'user'], default: 'user' })
+  // @IsOptional()
+  // role: string | undefined
+
+  @ApiPropertyOptional()
+  phone: string | undefined
 }
 
 export class AuthSignUpAdminDto {

@@ -29,8 +29,7 @@ export class AuthService {
     const hash = await argon.hash(dto.password)
     // save user to db
     try {
-      let role = [dto.role]
-      if (!role) role = ['user']
+      const role = ['user']
 
       // console.log(role,)
       const user = await this.prisma.user.create({
@@ -39,6 +38,7 @@ export class AuthService {
           name: dto.name,
           role: role,
           password: hash,
+          phone: dto.phone
         }
       })
 
@@ -275,7 +275,7 @@ export class AuthService {
 
     if (!successful) throw new BadRequestException('Something went wrong')
 
-    return { status: 200 }
+    return { statusCode: 200, message: 'Email sent' }
   }
 
   async resetPassword(dto: ResetPasswordDto) {

@@ -30,3 +30,8 @@ export class ErrorResonseDto {
   message: string
   error: string
 }
+
+export class ForgotPasswordSuccessfulResponseDto {
+  statusCode: number
+  message: string
+}

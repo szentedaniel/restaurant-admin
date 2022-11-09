@@ -97,7 +97,10 @@ export class RestaurantsService {
       })
       // let result = renameKeyName(restaurant, 'etterem_kategoria_rend', 'kinalat')
 
-      const result = Promise.all(restaurant.etterem_kategoria_rend.map(async kinalat => {
+      console.log(restaurant)
+
+
+      const result = await Promise.all(restaurant.etterem_kategoria_rend.map(async kinalat => {
         const termekek = await Promise.all(kinalat.kategoriak.termekek.map(async termek => {
           return {
             ...termek,
@@ -108,6 +111,8 @@ export class RestaurantsService {
 
         return kinalat
       }))
+
+
 
       return result
     } catch (error) {

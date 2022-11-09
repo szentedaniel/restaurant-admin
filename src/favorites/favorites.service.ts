@@ -14,6 +14,40 @@ export class FavoritesService {
         data: {
           termek_id: dto.termekId,
           user_id: user.id
+        },
+        include: {
+          termekek: {
+            include: {
+              termekek_fordito: {
+                include: {
+                  languages: true
+                }
+              },
+              termekek_allergenek_rend: {
+                include: {
+                  allergenek: {
+                    include: {
+                      allergenek_fordito: {
+                        include: {
+                          languages: true
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              kategoriak: {
+                include: {
+                  kategoriak_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
+                }
+              },
+              ettermek: true
+            }
+          },
         }
       })
 
@@ -33,12 +67,96 @@ export class FavoritesService {
       const favs = await this.prisma.kedvenc_termekek.findMany({
         where: {
           user_id: user.id
+        },
+        include: {
+          termekek: {
+            include: {
+              termekek_fordito: {
+                include: {
+                  languages: true
+                }
+              },
+              termekek_allergenek_rend: {
+                include: {
+                  allergenek: {
+                    include: {
+                      allergenek_fordito: {
+                        include: {
+                          languages: true
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              kategoriak: {
+                include: {
+                  kategoriak_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
+                }
+              },
+              ettermek: true
+            }
+          },
         }
       })
 
       if (!favs.length) throw new NotFoundException('Not found favorites')
 
       return favs
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async findAllProdFavByRestaurant(restaurantId: number, user: user) {
+    try {
+      const favs = await this.prisma.kedvenc_termekek.findMany({
+        where: {
+          user_id: user.id,
+        },
+        include: {
+          termekek: {
+            include: {
+              termekek_fordito: {
+                include: {
+                  languages: true
+                }
+              },
+              termekek_allergenek_rend: {
+                include: {
+                  allergenek: {
+                    include: {
+                      allergenek_fordito: {
+                        include: {
+                          languages: true
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              kategoriak: {
+                include: {
+                  kategoriak_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
+                }
+              },
+              ettermek: true
+            }
+          },
+        }
+      })
+
+      if (!favs.length) throw new NotFoundException('Not found favorites')
+
+      return favs.filter(fav => fav.termekek.ettermek.id === restaurantId)
     } catch (error) {
       throw error
     }
@@ -52,6 +170,40 @@ export class FavoritesService {
             termek_id: id,
             user_id: user.id
           }
+        },
+        include: {
+          termekek: {
+            include: {
+              termekek_fordito: {
+                include: {
+                  languages: true
+                }
+              },
+              termekek_allergenek_rend: {
+                include: {
+                  allergenek: {
+                    include: {
+                      allergenek_fordito: {
+                        include: {
+                          languages: true
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              kategoriak: {
+                include: {
+                  kategoriak_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  }
+                }
+              },
+              ettermek: true
+            }
+          },
         }
       })
 
@@ -70,6 +222,9 @@ export class FavoritesService {
         data: {
           etterem_id: dto.restaurantId,
           user_id: user.id
+        },
+        include: {
+          ettermek: true
         }
       })
 
@@ -89,6 +244,9 @@ export class FavoritesService {
       const favs = await this.prisma.kedvenc_ettermek.findMany({
         where: {
           user_id: user.id
+        },
+        include: {
+          ettermek: true
         }
       })
 
@@ -108,6 +266,9 @@ export class FavoritesService {
             etterem_id: id,
             user_id: user.id
           }
+        },
+        include: {
+          ettermek: true
         }
       })
 
