@@ -15,15 +15,7 @@ export class RestaurantsService {
 
       if (!restaurants.length) throw new NotFoundException('Not found restaurants')
 
-      const results = Promise.all(restaurants.map(async restaurant => {
-        return {
-          ...restaurant,
-          kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
-          languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id),
-          fogyasztasi_modok: await this.consimptionTypes.supportedConsumptionTypesByRestaurant(restaurant.id),
-        }
-      }))
-      return results
+      return await this.convertRestaurantData(restaurants, user)
     } catch (error) {
       throw error
     }
@@ -162,5 +154,42 @@ export class RestaurantsService {
     })
 
     return Boolean(isFavorite)
+  }
+
+  async convertRestaurantData(restaurants, user) {
+    const d = new Date()
+    const day = d.getDay() === 0 ? 7 : d.getDay() - 1
+
+    const results = await Promise.all(restaurants.map(async restaurant => {
+      return {
+        ...restaurant,
+        kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
+        languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id),
+        fogyasztasi_modok: await this.consimptionTypes.supportedConsumptionTypesByRestaurant(restaurant.id),
+      }
+    }))
+
+    const result = results.map(r => {
+      if (r.address && r.email && !!r.kedvenc !== null && !!r.kedvenc !== undefined && r.id && Array.isArray(r.img_path) && r.img_path.length && r.lat && r.lng && r.name && r.nyitvatartas && r.telefon && r.fogyasztasi_modok) {
+        return {
+          id: r.id,
+          address: r.address,
+          email: r.email,
+          favourite: r.kedvenc,
+          images: r.img_path ? [...r.img_path] : [],
+          latitude: r.lat,
+          longitude: r.lng,
+          name: r.name,
+          openingHours: r.nyitvatartas[day].open ? `${r.nyitvatartas[day].start};${r.nyitvatartas[day].end}` : '-;-',
+          phone: r.telefonm,
+          serviceType: r.fogyasztasi_modok.map(x => x.id),
+          nyitvatartas: r.nyitvatartas,
+          languages: r.languages,
+          description: r.leiras ? r.leiras : ''
+        }
+      }
+    }).filter(r => r)
+
+    return result
   }
 }

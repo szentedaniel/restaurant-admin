@@ -170,7 +170,7 @@ export class AuthService {
     // send back the user
     const convertedUser = this.convertUserData(user)
     delete user.password
-    const tokens = await this.newRefreshAndAccessToken(user, values)
+    const tokens = await this.newRefreshAndAccessToken(user, values, dto.remember)
     const response = {
       user: convertedUser,
       access_token: tokens.accessToken,
@@ -460,6 +460,7 @@ export class AuthService {
   private async newRefreshAndAccessToken(
     user: user,
     values: { userAgent: string; ipAddress: string },
+    remember = false
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const refreshObject = await this.prisma.refresh_tokens.create({
       data: {
@@ -471,7 +472,7 @@ export class AuthService {
 
     return {
       refreshToken: this.signRefreshToken(refreshObject),
-      accessToken: this.signAccessToken(user.id),
+      accessToken: this.signAccessToken(user.id, remember),
     }
   }
 

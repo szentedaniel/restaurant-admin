@@ -11,7 +11,7 @@ const Bassiana: Prisma.ettermekCreateInput = {
   telefon: '+3695521300',
   email: 'info@bassiana.hu',
   weblap: 'http://www.bassiana.hu/',
-  img_path: 'https://bassiana.hu/templ/gfx/design/img_bassiana_logo.png',
+  img_path: ['https://bassiana.hu/templ/gfx/design/img_bassiana_logo.png'],
   ceg: 'Hotel Bassiana Kft.',
 }
 
@@ -26,7 +26,7 @@ const Platan: Prisma.ettermekCreateInput = {
   telefon: '+3695312280',
   email: 'platansarvar2017@gmail.com',
   weblap: 'https://platan-etterem.metro.rest/',
-  img_path: null,
+  img_path: ['https://static.designmynight.com/uploads/2020/10/INteriors2.jpg', 'https://www.corinthia.com/media/3305/corinthia_budapest_brasserie_atrium_restaurant_tables.jpg'],
   ceg: null,
   etterem_nyelv: {
     createMany: {

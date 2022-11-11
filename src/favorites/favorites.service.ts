@@ -2,11 +2,12 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { user } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { RestaurantsService } from 'src/restaurants/restaurants.service'
 import { CreateFavoriteProdDto, CreateFavoriteRestaurantDto } from './dto/create-favorite.dto'
 
 @Injectable()
 export class FavoritesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private restaurantsService: RestaurantsService) { }
 
   async createProdFav(dto: CreateFavoriteProdDto, user: user) {
     try {
@@ -252,7 +253,7 @@ export class FavoritesService {
 
       if (!favs.length) throw new NotFoundException('Not found favorites')
 
-      return favs
+      return await this.restaurantsService.convertRestaurantData(favs.map(fav => fav.ettermek), user)
     } catch (error) {
       throw error
     }

@@ -103,7 +103,7 @@ model ettermek {
   email                    String?                    @db.VarChar(255)
   nyitvatartas             Json?
   weblap                   String?                    @db.VarChar(255)
-  img_path                 String?                    @db.VarChar(255)
+  img_path                 Json?
   img_bg_path              String?                    @db.VarChar(255)
   ceg                      String?                    @db.VarChar(255)
   city_name                String                     @db.VarChar(255)
