@@ -3,6 +3,7 @@ import { user } from '@prisma/client'
 import { ConsumptionTypesService } from 'src/consumption-types/consumption-types.service'
 import { LanguagesService } from 'src/languages/languages.service'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { Allergen, CategoriesDto, ProductDto } from './dto/products.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 
 @Injectable()
@@ -44,7 +45,7 @@ export class RestaurantsService {
 
   async getProducts(id: number, user: user) {
     try {
-      const restaurant = await this.prisma.ettermek.findFirst({
+      const products = await this.prisma.ettermek.findFirst({
         where: {
           id: id,
         },
@@ -89,24 +90,14 @@ export class RestaurantsService {
       })
       // let result = renameKeyName(restaurant, 'etterem_kategoria_rend', 'kinalat')
 
-      console.log(restaurant)
-
-
-      const result = await Promise.all(restaurant.etterem_kategoria_rend.map(async kinalat => {
-        const termekek = await Promise.all(kinalat.kategoriak.termekek.map(async termek => {
-          return {
-            ...termek,
-            kedvenc: await this.isFavoriteFood(termek.id, user)
-          }
-        }))
-        kinalat.kategoriak.termekek = termekek
-
-        return kinalat
-      }))
+      // console.log(products)
 
 
 
-      return result
+
+
+
+      return await this.convertCategoriesData(products, user)
     } catch (error) {
       throw error
     }
@@ -176,7 +167,7 @@ export class RestaurantsService {
           address: r.address,
           email: r.email,
           favourite: r.kedvenc,
-          images: r.img_path ? [...r.img_path] : [],
+          images: r.img_path ? [...r.img_path] : ['https://static.designmynight.com/uploads/2020/10/INteriors2.jpg', 'https://www.corinthia.com/media/3305/corinthia_budapest_brasserie_atrium_restaurant_tables.jpg'],
           latitude: r.lat,
           longitude: r.lng,
           name: r.name,
@@ -190,6 +181,139 @@ export class RestaurantsService {
       }
     }).filter(r => r)
 
+    return result
+  }
+
+  async convertCategoriesData(products, user) {
+    const temp = await Promise.all(products.etterem_kategoria_rend.map(async kinalat => {
+      const termekek = await Promise.all(kinalat.kategoriak.termekek.map(async termek => {
+        return {
+          ...termek,
+          kedvenc: await this.isFavoriteFood(termek.id, user)
+        }
+      }))
+      kinalat.kategoriak.termekek = termekek
+
+      return kinalat
+    }))
+
+    const result: CategoriesDto[] = await Promise.all(temp.map(async c => {
+
+      const temp_c = c.kategoriak
+      const temp_names = temp_c.kategoriak_fordito.map(kf => {
+        return {
+          language: kf.languages,
+          text: kf.nev
+        }
+      })
+
+      const temp_products: ProductDto[] = await Promise.all(temp_c.termekek.map(async p => {
+
+
+        const temp_names = p.termekek_fordito.map(pn => {
+          return {
+            language: pn.languages,
+            text: pn.termek_nev
+          }
+        })
+
+        const temp_desc = p.termekek_fordito.map(pn => {
+          return {
+            language: pn.languages,
+            text: pn.termek_leiras
+          }
+        })
+
+        const temp_allergens: Allergen[] = p.termekek_allergenek_rend.map(a => a.allergenek).map(a => {
+          const temp_fordit = a.allergenek_fordito.map(af => {
+            return {
+              language: af.languages,
+              text: af.nev
+            }
+          })
+
+          return {
+            id: a.id,
+            image: `${process.env.API_URL}/${a.image_path}`,
+            names: temp_fordit,
+
+          }
+        })
+
+        const temp: ProductDto = {
+          id: Number(p.id),
+          available: p.elerheto,
+          favourite: await this.isFavoriteFood(p.id, user),
+          priceInEuro: p.ar_euro,
+          priceInForint: parseInt(p.ar_forint.toString(), 10),
+          image: p.img_path ? `${process.env.API_URL}/${p.img_path}` : `${process.env.API_URL}/files/placeholders/product.png`,
+          names: temp_names,
+          descriptions: temp_desc,
+          allergens: temp_allergens,
+        }
+
+
+        return temp
+      }))
+      const result: CategoriesDto = {
+        id: c.kategoria_id,
+        names: temp_names,
+        products: temp_products
+      }
+      return result
+    }))
+    return result
+  }
+
+  async convertProductsData(products, user) {
+    const result: ProductDto[] = await Promise.all(products.map(async p => {
+
+
+      const temp_names = p.termekek_fordito.map(pn => {
+        return {
+          language: pn.languages,
+          text: pn.termek_nev
+        }
+      })
+
+      const temp_desc = p.termekek_fordito.map(pn => {
+        return {
+          language: pn.languages,
+          text: pn.termek_leiras
+        }
+      })
+
+      const temp_allergens: Allergen[] = p.termekek_allergenek_rend.map(a => a.allergenek).map(a => {
+        const temp_fordit = a.allergenek_fordito.map(af => {
+          return {
+            language: af.languages,
+            text: af.nev
+          }
+        })
+
+        return {
+          id: a.id,
+          image: `${process.env.API_URL}/${a.image_path}`,
+          names: temp_fordit,
+
+        }
+      })
+
+      const temp: ProductDto = {
+        id: Number(p.id),
+        available: p.elerheto,
+        favourite: await this.isFavoriteFood(p.id, user),
+        priceInEuro: p.ar_euro,
+        priceInForint: parseInt(p.ar_forint.toString(), 10),
+        image: p.img_path ? `${process.env.API_URL}/${p.img_path}` : `${process.env.API_URL}/files/placeholders/product.png`,
+        names: temp_names,
+        descriptions: temp_desc,
+        allergens: temp_allergens,
+      }
+
+
+      return temp
+    }))
     return result
   }
 }

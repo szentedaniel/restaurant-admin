@@ -67,4 +67,13 @@ export class FileuploadService {
     throw new NotFoundException('Image not found.')
   }
 
+  getPlaceholder(res: Response, filename: string) {
+    const path = `./images/placeholders`
+
+    const files = readdirSync(path)
+    if (files.includes(filename))
+      return of(res.sendFile(join(process.cwd(), `${path}/${filename}`)))
+    throw new NotFoundException('Image not found.')
+  }
+
 }

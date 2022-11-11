@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { ApiHideProperty, ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from "class-validator"
 
 export class CreateOrderDto {
@@ -10,14 +10,15 @@ export class CreateOrderDto {
   @ApiProperty()
   asztal_id: number | null
 
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  kupon: string | undefined
+  // @ApiPropertyOptional()
+  // @IsString()
+  // @IsOptional()
+  // @ApiHideProperty()
+  // kupon: string | undefined
 
   @ApiProperty()
   @IsBoolean()
-  fizetesi_most: boolean
+  fizetes_most: boolean
 
   @ApiProperty()
   @IsNumber()

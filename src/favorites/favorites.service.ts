@@ -157,7 +157,9 @@ export class FavoritesService {
 
       if (!favs.length) throw new NotFoundException('Not found favorites')
 
-      return favs.filter(fav => fav.termekek.ettermek.id === restaurantId)
+      this.restaurantsService.convertProductsData(favs.filter(fav => fav.termekek.ettermek.id === restaurantId).map(f => f.termekek), user)
+
+      return await this.restaurantsService.convertProductsData(favs.filter(fav => fav.termekek.ettermek.id === restaurantId).map(f => f.termekek), user)
     } catch (error) {
       throw error
     }

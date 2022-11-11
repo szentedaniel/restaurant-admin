@@ -1,11 +1,14 @@
 import { Controller, Get, Body, Patch, Param, UseGuards } from '@nestjs/common'
 import { RestaurantsService } from './restaurants.service'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { GetUser, Roles } from 'src/auth/decorator'
 import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { Role } from 'src/auth/enums'
 import { user } from '@prisma/client'
+import { ErrorResonseDto } from 'src/auth/dto/authRespose.dto'
+import { CategoriesDto } from './dto/products.dto'
+import { RestaurantDto } from './dto/restaurant.dto'
 
 
 @ApiTags('restaurants')
@@ -18,6 +21,19 @@ export class RestaurantsController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: `Must log in` })
+  @ApiResponse({
+    isArray: true,
+    status: 200,
+    type: RestaurantDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
   findAll(@GetUser() user: user) {
     return this.restaurantsService.findAll(user)
   }
@@ -35,6 +51,19 @@ export class RestaurantsController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: `Must log in` })
+  @ApiResponse({
+    isArray: true,
+    status: 200,
+    type: CategoriesDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
   getProducts(@Param('id') id: string, @GetUser() user: user) {
     return this.restaurantsService.getProducts(+id, user)
   }

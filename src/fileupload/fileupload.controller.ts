@@ -129,4 +129,13 @@ export class FileuploadController {
     return this.fileuploadService.getProduct(res, filename)
   }
 
+  @Get('placeholders/:filename')
+  @ApiParam({
+    name: 'filename',
+    description: 'Name of the image of the product (*on the server*)',
+  })
+  getPlaceholder(@Res() res: Response, @Param('filename') filename) {
+    return this.fileuploadService.getPlaceholder(res, filename)
+  }
+
 }

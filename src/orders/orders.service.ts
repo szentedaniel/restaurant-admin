@@ -19,8 +19,8 @@ export class OrdersService {
           etterem_id: dto.etterem_id,
           statusz_id: 1,
           asztal_id: dto.asztal_id,
-          kupon: dto.kupon,
-          fizetes_most: dto.fizetesi_most,
+          // kupon: dto.kupon,
+          fizetes_most: dto.fizetes_most,
           fizetesi_mod_id: dto.fizetesi_mod_id,
           fogyasztasi_mod_id: dto.fogyasztasi_mod_id,
           rendelesek_termekek: {
@@ -30,51 +30,14 @@ export class OrdersService {
           },
         },
         include: {
-          user: true,
-          asztalok: true,
-          fizetesi_mod: {
-            include: {
-              fizetesi_mod_fordito: {
-                include: {
-                  languages: true
-                }
-              }
-            }
-          },
-          fogyasztasi_mod: {
-            include: {
-              fogyasztasi_mod_fordito: {
-                include: {
-                  languages: true
-                }
-              }
-            }
-          },
-          rendeles_statusz: {
-            include: {
-              rendeles_statusz_fordito: {
-                include: {
-                  languages: true
-                }
-              }
-            }
-          },
           rendelesek_termekek: {
-            include: {
-              termekek: {
-                include: {
-                  termekek_fordito: {
-                    include: {
-                      languages: true
-                    }
-                  }
-                }
-              }
+            select: {
+              termek_id: true
             }
           }
         }
       })
-      return order
+      return order.rendelesek_termekek.map(o => o.termek_id)
     } catch (error) {
       throw error
     }
@@ -267,7 +230,7 @@ export class OrdersService {
           user_id: user.id,
           etterem_id: dto.etterem_id,
           statusz_id: {
-            notIn: [5, 6]
+            notIn: [1, 3, 6, 7]
           }
         }
       })
@@ -306,7 +269,7 @@ export class OrdersService {
           user_id: user.id,
           etterem_id: dto.etterem_id,
           statusz_id: {
-            notIn: [6]
+            notIn: [7]
           }
         },
         include: {

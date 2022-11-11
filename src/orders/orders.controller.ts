@@ -20,6 +20,15 @@ export class OrdersController {
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: `Must log in` })
+  @ApiResponse({
+    isArray: true,
+    status: 200,
+    type: Number
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
   create(@Body() createOrderDto: CreateOrderDto, @GetUser() user: user) {
     return this.ordersService.createOrder(createOrderDto, user)
   }

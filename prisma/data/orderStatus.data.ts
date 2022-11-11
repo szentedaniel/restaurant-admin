@@ -7,11 +7,11 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
       createMany: {
         data: [
           {
-            nev: 'leadva',
+            nev: 'megrendelt',
             nyelv_id: 44
           },
           {
-            nev: 'placed',
+            nev: 'ordered',
             nyelv_id: 1
           },
           {
@@ -49,6 +49,27 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
       createMany: {
         data: [
           {
+            nev: 'elutasítva',
+            nyelv_id: 44
+          },
+          {
+            nev: 'declined',
+            nyelv_id: 1
+          },
+          {
+            nev: 'zurückgegangen',
+            nyelv_id: 23
+          }
+        ]
+      }
+    }
+  },
+  {
+    id: 4,
+    rendeles_statusz_fordito: {
+      createMany: {
+        data: [
+          {
             nev: 'elkészült',
             nyelv_id: 44
           },
@@ -65,7 +86,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 4,
+    id: 5,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -86,7 +107,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 5,
+    id: 6,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -107,7 +128,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 6,
+    id: 7,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -128,3 +149,13 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   }
 ]
+
+export enum OrderStatus {
+  Ordered = 1,
+  Accepted = 2,
+  Declined = 3,
+  Completed = 4,
+  Received = 5,
+  PaymentRequested = 6,
+  Paid = 7
+}
