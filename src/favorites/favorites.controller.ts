@@ -8,6 +8,7 @@ import { JwtGuard } from 'src/auth/guard'
 import { defaultKedvencEtteremResponseDto, defaultKedvencTermekResponseDto } from './dto/response-favorite.dto'
 import { ErrorResonseDto } from 'src/auth/dto/authRespose.dto'
 import { ProductDto } from 'src/restaurants/dto/products.dto'
+import { RestaurantDto } from 'src/restaurants/dto/restaurant.dto'
 
 @ApiTags('favorites', 'mobile')
 @Controller('favorites')
@@ -115,7 +116,7 @@ export class FavoritesController {
   @ApiResponse({
     isArray: true,
     status: 200,
-    type: defaultKedvencEtteremResponseDto
+    type: RestaurantDto
   })
   @ApiResponse({
     status: 403,
