@@ -1,14 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { user } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
+import { OrderStatus } from 'prisma/data'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { RestaurantsService } from 'src/restaurants/restaurants.service'
 import { genOrderUniqueId } from 'src/utils'
+import { CartDto } from './dto/cart.dto'
 import { CreateOrderDto } from './dto/create-order.dto'
 import { myCartDto, PayRequiredDto, UpdateOrderDto } from './dto/update-order.dto'
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private restaurantsService: RestaurantsService) { }
 
   async createOrder(dto: CreateOrderDto, user: user) {
     try {
@@ -230,7 +233,7 @@ export class OrdersService {
           user_id: user.id,
           etterem_id: dto.etterem_id,
           statusz_id: {
-            notIn: [1, 3, 6, 7]
+            notIn: [OrderStatus.Ordered, OrderStatus.Declined, OrderStatus.PaymentRequested, OrderStatus.Paid]
           }
         }
       })
@@ -242,7 +245,7 @@ export class OrdersService {
               id: order.id
             },
             data: {
-              statusz_id: 5,
+              statusz_id: OrderStatus.PaymentRequested,
               fizetesi_mod_id: dto.fizetesi_mod_id
             },
             include: {
@@ -251,7 +254,9 @@ export class OrdersService {
           })
         })
       )
-      return results
+
+
+      return results.map(r => r.rendelesek_termekek.map(t => t.termek_id))
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -269,14 +274,108 @@ export class OrdersService {
           user_id: user.id,
           etterem_id: dto.etterem_id,
           statusz_id: {
-            notIn: [7]
+            notIn: [OrderStatus.Declined, OrderStatus.Paid]
           }
         },
         include: {
-          rendelesek_termekek: true
+          rendelesek_termekek: {
+            include: {
+              termekek: {
+                include: {
+                  termekek_fordito: {
+                    include: {
+                      languages: true
+                    }
+                  },
+                  termekek_allergenek_rend: {
+                    include: {
+                      allergenek: {
+                        include: {
+                          allergenek_fordito: {
+                            include: {
+                              languages: true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       })
-      return orders
+
+      console.dir(orders.map(o => o.rendelesek_termekek.map(rt => rt.termekek)), { depth: 0 })
+
+
+      // const result: ProductDto[] = await Promise.all(products.map(async p => {
+
+
+      //   const temp_names = p.termekek_fordito.map(pn => {
+      //     return {
+      //       language: pn.languages,
+      //       text: pn.termek_nev
+      //     }
+      //   })
+
+      //   const temp_desc = p.termekek_fordito.map(pn => {
+      //     return {
+      //       language: pn.languages,
+      //       text: pn.termek_leiras
+      //     }
+      //   })
+
+      //   const temp_allergens: Allergen[] = p.termekek_allergenek_rend.map(a => a.allergenek).map(a => {
+      //     const temp_fordit = a.allergenek_fordito.map(af => {
+      //       return {
+      //         language: af.languages,
+      //         text: af.nev
+      //       }
+      //     })
+
+      //     return {
+      //       id: a.id,
+      //       image: `${process.env.API_URL}/${a.image_path}`,
+      //       names: temp_fordit,
+
+      //     }
+      //   })
+
+      //   const temp: ProductDto = {
+      //     id: Number(p.id),
+      //     available: p.elerheto,
+      //     favourite: await this.isFavoriteFood(p.id, user),
+      //     priceInEuro: p.ar_euro,
+      //     priceInForint: parseInt(p.ar_forint.toString(), 10),
+      //     image: p.img_path ? `${process.env.API_URL}/${p.img_path}` : `${process.env.API_URL}/files/placeholders/product.png`,
+      //     names: temp_names,
+      //     descriptions: temp_desc,
+      //     allergens: temp_allergens,
+      //   }
+
+
+      //   return temp
+      // }))
+
+      const result = []
+
+      for (let i = 0; i < orders.length; i++) {
+        const order = orders[i]
+
+        for (let j = 0; j < order.rendelesek_termekek.length; j++) {
+          const termekek = order.rendelesek_termekek[j]
+          termekek.termekek
+          result.push({ product: termekek.termekek, status: order.statusz_id })
+
+        }
+
+      }
+
+
+
+      return this.restaurantsService.convertCartData(result, user)
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

@@ -38,7 +38,7 @@ export class FavoritesController {
   @ApiResponse({
     isArray: true,
     status: 200,
-    type: defaultKedvencTermekResponseDto
+    type: ProductDto
   })
   @ApiResponse({
     status: 403,

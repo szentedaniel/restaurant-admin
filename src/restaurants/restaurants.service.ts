@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { user } from '@prisma/client'
 import { ConsumptionTypesService } from 'src/consumption-types/consumption-types.service'
 import { LanguagesService } from 'src/languages/languages.service'
+import { CartDto } from 'src/orders/dto/cart.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { Allergen, CategoriesDto, ProductDto } from './dto/products.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
@@ -313,6 +314,61 @@ export class RestaurantsService {
 
 
       return temp
+    }))
+    return result
+  }
+
+  async convertCartData(products, user) {
+    const result: CartDto[] = await Promise.all(products.map(async p => {
+
+
+      const temp_names = p.product.termekek_fordito.map(pn => {
+        return {
+          language: pn.languages,
+          text: pn.termek_nev
+        }
+      })
+
+      const temp_desc = p.product.termekek_fordito.map(pn => {
+        return {
+          language: pn.languages,
+          text: pn.termek_leiras
+        }
+      })
+
+      const temp_allergens: Allergen[] = p.product.termekek_allergenek_rend.map(a => a.allergenek).map(a => {
+        const temp_fordit = a.allergenek_fordito.map(af => {
+          return {
+            language: af.languages,
+            text: af.nev
+          }
+        })
+
+        return {
+          id: a.id,
+          image: `${process.env.API_URL}/${a.image_path}`,
+          names: temp_fordit,
+
+        }
+      })
+
+      const temp: ProductDto = {
+        id: Number(p.product.id),
+        available: p.product.elerheto,
+        favourite: await this.isFavoriteFood(p.product.id, user),
+        priceInEuro: p.product.ar_euro,
+        priceInForint: parseInt(p.product.ar_forint.toString(), 10),
+        image: p.product.img_path ? `${process.env.API_URL}/${p.product.img_path}` : `${process.env.API_URL}/files/placeholders/product.png`,
+        names: temp_names,
+        descriptions: temp_desc,
+        allergens: temp_allergens,
+      }
+
+
+      return {
+        status: p.status,
+        product: temp,
+      }
     }))
     return result
   }

@@ -1,8 +1,19 @@
 import { Prisma } from "@prisma/client"
 
+
+export enum OrderStatus {
+  Ordered = 1,
+  Accepted = 2,
+  Declined = 3,
+  Completed = 4,
+  Received = 5,
+  PaymentRequested = 6,
+  Paid = 7
+}
+
 export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
   {
-    id: 1,
+    id: OrderStatus.Ordered,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -23,7 +34,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 2,
+    id: OrderStatus.Accepted,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -44,7 +55,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 3,
+    id: OrderStatus.Declined,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -65,7 +76,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 4,
+    id: OrderStatus.Completed,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -86,7 +97,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 5,
+    id: OrderStatus.Received,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -107,7 +118,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 6,
+    id: OrderStatus.PaymentRequested,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -128,7 +139,7 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   },
   {
-    id: 7,
+    id: OrderStatus.Paid,
     rendeles_statusz_fordito: {
       createMany: {
         data: [
@@ -149,13 +160,3 @@ export const orderStatus: Prisma.rendeles_statuszCreateInput[] = [
     }
   }
 ]
-
-export enum OrderStatus {
-  Ordered = 1,
-  Accepted = 2,
-  Declined = 3,
-  Completed = 4,
-  Received = 5,
-  PaymentRequested = 6,
-  Paid = 7
-}

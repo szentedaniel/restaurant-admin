@@ -9,6 +9,7 @@ import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { Role } from 'src/auth/enums'
 import { DefaultOrdersResponseDto } from './dto/respose-order.dto'
 import { ErrorResonseDto } from 'src/auth/dto/authRespose.dto'
+import { CartDto } from './dto/cart.dto'
 
 @ApiTags('orders')
 @Controller('orders')
@@ -70,7 +71,7 @@ export class OrdersController {
   @ApiResponse({
     status: 200,
     isArray: true,
-    type: DefaultOrdersResponseDto
+    type: Number
   })
   @ApiResponse({
     status: 400,
@@ -92,6 +93,21 @@ export class OrdersController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.User)
   @ApiOperation({ summary: `ReqRole: ${[Role.User]}` })
+  @ApiResponse({
+    status: 200,
+    isArray: true,
+    type: CartDto
+  })
+  @ApiResponse({
+    status: 400,
+    isArray: false,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    isArray: false,
+    type: ErrorResonseDto
+  })
   myCart(@Body() dto: myCartDto, @GetUser() user: user) {
     return this.ordersService.myCart(dto, user)
   }
