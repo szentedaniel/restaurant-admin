@@ -1,6 +1,6 @@
 export class CartDto {
   status: number
-  piece: number
+  quantity: number
   product: Product
 }
 

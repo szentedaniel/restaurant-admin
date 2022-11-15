@@ -366,7 +366,7 @@ export class RestaurantsService {
 
       return {
         status: p.status,
-        piece: p.piece,
+        quantity: p.quantity,
         product: temp,
       }
     }))
