@@ -5,6 +5,7 @@ import { LanguagesService } from 'src/languages/languages.service'
 import { CartDto } from 'src/orders/dto/cart.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { Allergen, CategoriesDto, ProductDto } from './dto/products.dto'
+import { RestaurantDto } from './dto/restaurant.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 
 @Injectable()
@@ -198,14 +199,14 @@ export class RestaurantsService {
       }
     }))
 
-    const result = results.map(r => {
+    const result: RestaurantDto[] = results.map(r => {
       if (r.address && r.email && !!r.kedvenc !== null && !!r.kedvenc !== undefined && r.id && r.lat && r.lng && r.name && r.nyitvatartas && r.telefon && r.fogyasztasi_modok) {
         return {
           id: r.id,
           address: r.address,
           email: r.email,
           favourite: r.kedvenc,
-          images: (Array.isArray(r.img_path) && r.img_path.length) ? [...r.img_path] : [`${process.env.API_URL}/files/placeholders/product.png`],
+          images: (Array.isArray(r.img_path) && r.img_path.length) ? [...r.img_path] : [`${process.env.API_URL}/files/placeholders/restaurant.png`],
           latitude: r.lat,
           longitude: r.lng,
           name: r.name,

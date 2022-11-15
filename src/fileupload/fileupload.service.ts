@@ -67,6 +67,13 @@ export class FileuploadService {
     throw new NotFoundException('Image not found.')
   }
 
+  getRestaurant(res: Response, filename: string) {
+    const files = readdirSync('./uploads/restaurants')
+    if (files.includes(filename))
+      return of(res.sendFile(join(process.cwd(), `./uploads/restaurants/${filename}`)))
+    throw new NotFoundException('Image not found.')
+  }
+
   getPlaceholder(res: Response, filename: string) {
     const path = `./images/placeholders`
 
