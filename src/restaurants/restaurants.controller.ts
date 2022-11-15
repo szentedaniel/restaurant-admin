@@ -68,6 +68,15 @@ export class RestaurantsController {
     return this.restaurantsService.getProducts(+id, user)
   }
 
+  @Get(':id/description')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin]}` })
+  @ApiBearerAuth()
+  getDesc(@Param('id') id: string) {
+    return this.restaurantsService.getDesc(+id)
+  }
+
   @Patch(':id')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.Admin)

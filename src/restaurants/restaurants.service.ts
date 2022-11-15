@@ -105,6 +105,23 @@ export class RestaurantsService {
     }
   }
 
+  async getDesc(id: number) {
+    try {
+      const desc = await this.prisma.leiras_fordito.findMany({
+        where: {
+          etterem_id: id
+        },
+        include: {
+          languages: true
+        }
+      })
+
+      return desc
+    } catch (error) {
+      throw error
+    }
+  }
+
   async update(id: number, updateRestaurantDto: UpdateRestaurantDto, user: user) {
     try {
       if (updateRestaurantDto.languages) {
