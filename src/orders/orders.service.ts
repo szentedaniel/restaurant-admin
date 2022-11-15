@@ -307,58 +307,6 @@ export class OrdersService {
         }
       })
 
-      console.dir(orders.map(o => o.rendelesek_termekek.map(rt => rt.termekek)), { depth: 0 })
-
-
-      // const result: ProductDto[] = await Promise.all(products.map(async p => {
-
-
-      //   const temp_names = p.termekek_fordito.map(pn => {
-      //     return {
-      //       language: pn.languages,
-      //       text: pn.termek_nev
-      //     }
-      //   })
-
-      //   const temp_desc = p.termekek_fordito.map(pn => {
-      //     return {
-      //       language: pn.languages,
-      //       text: pn.termek_leiras
-      //     }
-      //   })
-
-      //   const temp_allergens: Allergen[] = p.termekek_allergenek_rend.map(a => a.allergenek).map(a => {
-      //     const temp_fordit = a.allergenek_fordito.map(af => {
-      //       return {
-      //         language: af.languages,
-      //         text: af.nev
-      //       }
-      //     })
-
-      //     return {
-      //       id: a.id,
-      //       image: `${process.env.API_URL}/${a.image_path}`,
-      //       names: temp_fordit,
-
-      //     }
-      //   })
-
-      //   const temp: ProductDto = {
-      //     id: Number(p.id),
-      //     available: p.elerheto,
-      //     favourite: await this.isFavoriteFood(p.id, user),
-      //     priceInEuro: p.ar_euro,
-      //     priceInForint: parseInt(p.ar_forint.toString(), 10),
-      //     image: p.img_path ? `${process.env.API_URL}/${p.img_path}` : `${process.env.API_URL}/files/placeholders/product.png`,
-      //     names: temp_names,
-      //     descriptions: temp_desc,
-      //     allergens: temp_allergens,
-      //   }
-
-
-      //   return temp
-      // }))
-
       const result = []
 
       for (let i = 0; i < orders.length; i++) {
@@ -367,7 +315,7 @@ export class OrdersService {
         for (let j = 0; j < order.rendelesek_termekek.length; j++) {
           const termekek = order.rendelesek_termekek[j]
           termekek.termekek
-          result.push({ product: termekek.termekek, status: order.statusz_id })
+          result.push({ product: termekek.termekek, status: order.statusz_id, piece: termekek.darab })
 
         }
 

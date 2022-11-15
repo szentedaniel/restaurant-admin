@@ -364,9 +364,9 @@ export class RestaurantsService {
         allergens: temp_allergens,
       }
 
-
       return {
         status: p.status,
+        piece: p.piece,
         product: temp,
       }
     }))

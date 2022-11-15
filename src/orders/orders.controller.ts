@@ -7,7 +7,6 @@ import { GetUser, Roles } from 'src/auth/decorator'
 import { user } from '@prisma/client'
 import { JwtGuard, RolesGuard } from 'src/auth/guard'
 import { Role } from 'src/auth/enums'
-import { DefaultOrdersResponseDto } from './dto/respose-order.dto'
 import { ErrorResonseDto } from 'src/auth/dto/authRespose.dto'
 import { CartDto } from './dto/cart.dto'
 

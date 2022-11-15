@@ -1,13 +1,12 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Ip, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
-import { ApiBody, ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Ip, Param, Post, Query, Req } from '@nestjs/common'
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { user } from '@prisma/client'
 import { AuthService } from './auth.service'
-import { GetUser } from './decorator'
 import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, ForgotPasswordDto, ResetPasswordDto } from './dto'
 import { emailVerifyDto, defaultAuthResponseDto, ErrorResonseDto, ForgotPasswordSuccessfulResponseDto } from './dto/authRespose.dto'
 import GoogleTokenDto from './dto/google-token.dto'
 import RefreshTokenDto from './dto/refresh-token.dto'
-import { JwtGuard } from './guard'
+
 
 @ApiTags('auth')
 @Controller('auth')
