@@ -108,7 +108,6 @@ model ettermek {
   ceg                      String?                    @db.VarChar(255)
   city_name                String                     @db.VarChar(255)
   lat                      Float?
-  leiras                   String?                    @db.Text
   lng                      Float?
   etterem_kategoria_rend   etterem_kategoria_rend[]
   etterem_konyhatipus_rend etterem_konyhatipus_rend[]
@@ -117,6 +116,7 @@ model ettermek {
   foglalasok               foglalasok[]
   fogyasztasi_mod_rend     fogyasztasi_mod_rend[]
   kedvenc_ettermek         kedvenc_ettermek[]
+  leiras_fordito           leiras_fordito[]
   rendelesek               rendelesek[]
   termekek                 termekek[]
   user                     user[]
@@ -318,6 +318,7 @@ model languages {
   fogyasztasi_mod_fordito  fogyasztasi_mod_fordito[]
   kategoriak_fordito       kategoriak_fordito[]
   konyhatipusok_fordito    konyhatipusok_fordito[]
+  leiras_fordito           leiras_fordito[]
   rendeles_statusz_fordito rendeles_statusz_fordito[]
   termekek_fordito         termekek_fordito[]
 }
@@ -439,4 +440,15 @@ model refresh_tokens {
   user       user    @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_refresh_tokens_user")
 
   @@index([user_id], map: "fk_refresh_tokens_user")
+}
+
+model leiras_fordito {
+  etterem_id Int
+  nyelv_id   Int       @db.UnsignedInt
+  text       String?   @db.MediumText
+  ettermek   ettermek  @relation(fields: [etterem_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_leiras_fordito_ettermek")
+  languages  languages @relation(fields: [nyelv_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_leiras_fordito_languages")
+
+  @@id([etterem_id, nyelv_id])
+  @@index([nyelv_id], map: "fk_leiras_fordito_languages")
 }

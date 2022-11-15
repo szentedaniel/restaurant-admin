@@ -1,10 +1,10 @@
 export class CategoriesDto {
   id: number
-  names: NameElement[]
+  names: LanguageElement[]
   products: ProductDto[]
 }
 
-export class NameElement {
+export class LanguageElement {
   language: Language
   text: string
 }
@@ -28,7 +28,7 @@ export class ProductDto {
   descriptions: DescElement[]
   favourite: boolean
   image: string
-  names: NameElement[]
+  names: LanguageElement[]
   priceInEuro: number
   priceInForint: number
 }
@@ -36,5 +36,5 @@ export class ProductDto {
 export class Allergen {
   id: number
   image: string
-  names: NameElement[]
+  names: LanguageElement[]
 }

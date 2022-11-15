@@ -1,3 +1,5 @@
+import { LanguageElement } from "./products.dto"
+
 export class RestaurantDto {
   id: number
   address: string
@@ -9,9 +11,9 @@ export class RestaurantDto {
   name: string
   openingHours: string
   serviceType: number[]
-  nyitvatartas: Nyitvatarta[]
+  description: LanguageElement[]
+  nyitvatartas: Nyitvatartas[]
   languages: Language[]
-  description: string
 }
 
 export class Language {
@@ -20,7 +22,7 @@ export class Language {
   kod: string
 }
 
-export class Nyitvatarta {
+export class Nyitvatartas {
   end: string
   open: boolean
   start: string

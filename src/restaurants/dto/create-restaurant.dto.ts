@@ -22,7 +22,7 @@ export class CreateRestaurantDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  leiras: string | undefined
+  leiras: LeirasDto[] | undefined
 
   @ApiProperty()
   @IsString()
@@ -74,4 +74,10 @@ export class CreateRestaurantDto {
   @ApiPropertyOptional()
   @IsOptional()
   fogyasztasi_modok: Array<number> | undefined
+}
+
+
+export class LeirasDto {
+  nyelv_id: number
+  text: string
 }

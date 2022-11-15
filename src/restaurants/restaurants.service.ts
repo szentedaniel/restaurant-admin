@@ -108,11 +108,14 @@ export class RestaurantsService {
     try {
       if (updateRestaurantDto.languages) {
         await Promise.all(await this.languages.updateLanguagesByRestaurantId(id, { languages: updateRestaurantDto.languages }))
-      } else if (updateRestaurantDto.fogyasztasi_modok) {
+      }
+      if (updateRestaurantDto.fogyasztasi_modok) {
         await Promise.all(await this.consimptionTypes.updateRestaurantConsumptionTypeByRestaurantId(id, { consumptionType: updateRestaurantDto.fogyasztasi_modok }))
       }
       delete updateRestaurantDto.languages
       delete updateRestaurantDto.fogyasztasi_modok
+      const leiras = updateRestaurantDto.leiras
+      delete updateRestaurantDto.leiras
       const updatedRestaurant = await this.prisma.ettermek.update({
         where: {
           id: id
@@ -120,6 +123,23 @@ export class RestaurantsService {
         data: updateRestaurantDto
       })
       if (!updatedRestaurant) throw new NotFoundException(`Not found restaurant with id: ${id}`)
+      if (leiras) {
+        await Promise.all(await leiras.map(async desc => {
+          return await this.prisma.leiras_fordito.upsert({
+            where: {
+              etterem_id_nyelv_id: {
+                etterem_id: id,
+                nyelv_id: desc.nyelv_id
+              }
+            },
+            update: desc,
+            create: {
+              ...desc,
+              etterem_id: id
+            }
+          })
+        }))
+      }
       return await this.findOne(id, user)
     } catch (error) {
       throw error
@@ -153,31 +173,48 @@ export class RestaurantsService {
     const day = d.getDay() === 0 ? 7 : d.getDay() - 1
 
     const results = await Promise.all(restaurants.map(async restaurant => {
+      const temp_descriptions = await this.prisma.leiras_fordito.findMany({
+        where: {
+          etterem_id: restaurant.id
+        },
+        include: {
+          languages: true
+        }
+      })
+
+      const descriptions = temp_descriptions.map(lf => {
+        return {
+          language: lf.languages,
+          text: lf.text
+        }
+      })
+
       return {
         ...restaurant,
         kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
         languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id),
         fogyasztasi_modok: await this.consimptionTypes.supportedConsumptionTypesByRestaurant(restaurant.id),
+        descriptions: descriptions
       }
     }))
 
     const result = results.map(r => {
-      if (r.address && r.email && !!r.kedvenc !== null && !!r.kedvenc !== undefined && r.id && Array.isArray(r.img_path) && r.img_path.length && r.lat && r.lng && r.name && r.nyitvatartas && r.telefon && r.fogyasztasi_modok) {
+      if (r.address && r.email && !!r.kedvenc !== null && !!r.kedvenc !== undefined && r.id && r.lat && r.lng && r.name && r.nyitvatartas && r.telefon && r.fogyasztasi_modok) {
         return {
           id: r.id,
           address: r.address,
           email: r.email,
           favourite: r.kedvenc,
-          images: r.img_path ? [...r.img_path] : ['https://static.designmynight.com/uploads/2020/10/INteriors2.jpg', 'https://www.corinthia.com/media/3305/corinthia_budapest_brasserie_atrium_restaurant_tables.jpg'],
+          images: (Array.isArray(r.img_path) && r.img_path.length) ? [...r.img_path] : [`${process.env.API_URL}/files/placeholders/product.png`],
           latitude: r.lat,
           longitude: r.lng,
           name: r.name,
           openingHours: r.nyitvatartas[day].open ? `${r.nyitvatartas[day].start};${r.nyitvatartas[day].end}` : '-;-',
           phone: r.telefonm,
           serviceType: r.fogyasztasi_modok.map(x => x.id),
+          description: r.descriptions,
           nyitvatartas: r.nyitvatartas,
           languages: r.languages,
-          description: r.leiras ? r.leiras : ''
         }
       }
     }).filter(r => r)
