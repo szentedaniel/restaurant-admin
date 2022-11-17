@@ -21,15 +21,17 @@ export class FileuploadService {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
   }
 
-  uploadImage(file: Express.Multer.File) {
+  async uploadImage(file: Express.Multer.File) {
     try {
-      this.logger.log(`File uploaded successfully: ${file.filename} (${this.formatBytes(file.size)})`)
+      this.logger.log(`File uploaded successfully: ${await file.filename} (${this.formatBytes(file.size)})`)
       return {
         'success': true,
         'data': file
       }
 
     } catch (err) {
+      console.log(err)
+
       this.logger.error('An error occurred while uploading an image')
       return {
         'success': false,

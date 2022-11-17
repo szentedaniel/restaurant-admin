@@ -207,14 +207,18 @@ export class RestaurantsService {
         }
       })
 
+      const temp_images = restaurant.img_path.map(img => `${process.env.API_URL}/${img}`)
+
       return {
         ...restaurant,
         kedvenc: await this.isFavoriteRestaurant(restaurant.id, user),
         languages: await this.languages.supportedLanguagesByRestaurant(restaurant.id),
         fogyasztasi_modok: await this.consimptionTypes.supportedConsumptionTypesByRestaurant(restaurant.id),
-        descriptions: descriptions
+        descriptions: descriptions,
+        images: temp_images,
       }
     }))
+
 
     const result: RestaurantDto[] = results.map(r => {
       if (r.address && r.email && !!r.kedvenc !== null && !!r.kedvenc !== undefined && r.id && r.lat && r.lng && r.name && r.nyitvatartas && r.telefon && r.fogyasztasi_modok) {
@@ -223,7 +227,7 @@ export class RestaurantsService {
           address: r.address,
           email: r.email,
           favourite: r.kedvenc,
-          images: (Array.isArray(r.img_path) && r.img_path.length) ? [...r.img_path] : [`${process.env.API_URL}/files/placeholders/restaurant.png`],
+          images: (Array.isArray(r.images) && r.images.length) ? [...r.images] : [`${process.env.API_URL}/files/placeholders/restaurant.png`],
           latitude: r.lat,
           longitude: r.lng,
           name: r.name,

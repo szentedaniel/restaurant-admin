@@ -51,10 +51,10 @@ export class FileuploadController {
       callback(null, true)
     },
   }))
-  uploadFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
     // console.log('upload from user: ', user)
 
-    return this.fileuploadService.uploadImage(file)
+    return await this.fileuploadService.uploadImage(file)
   }
 
   @Post('product')
@@ -94,10 +94,10 @@ export class FileuploadController {
       callback(null, true)
     },
   }))
-  uploadProductFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
+  async uploadProductFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
     // console.log('upload from user: ', user)
 
-    return this.fileuploadService.uploadImage(file)
+    return await this.fileuploadService.uploadImage(file)
   }
 
   @Post('restaurant')
@@ -137,10 +137,10 @@ export class FileuploadController {
       callback(null, true)
     },
   }))
-  uploadRestaurantFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
+  async uploadRestaurantFile(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
     // console.log('upload from user: ', user)
 
-    return this.fileuploadService.uploadImage(file)
+    return await this.fileuploadService.uploadImage(file)
   }
 
   @Get('image/:filename')
@@ -178,7 +178,7 @@ export class FileuploadController {
     description: 'Name of the image of the restaurant (*on the server*)',
   })
   getRestaurant(@Res() res: Response, @Param('filename') filename) {
-    return this.fileuploadService.getProduct(res, filename)
+    return this.fileuploadService.getRestaurant(res, filename)
   }
 
   @Get('placeholders/:filename')
