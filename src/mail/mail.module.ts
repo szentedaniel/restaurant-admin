@@ -10,12 +10,12 @@ import { ConfigService } from '@nestjs/config'
       useFactory: async (config: ConfigService) => ({
         // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
         transport: {
-          host: 'smtp.mailtrap.io',
+          host: config.get('MAIL_HOST'),
           // secure: false,
-          auth: {
-            user: config.get('MAILTRAP_USER'),
-            pass: config.get('MAILTRAP_PASS'),
-          },
+          // auth: {
+          //   user: config.get('MAILTRAP_USER'),
+          //   pass: config.get('MAILTRAP_PASS'),
+          // },
         },
         defaults: {
           from: config.get('MAIL_SENDER'),
