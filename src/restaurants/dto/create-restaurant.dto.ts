@@ -24,6 +24,10 @@ export class CreateRestaurantDto {
   @IsOptional()
   leiras: LeirasDto[] | undefined
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  aktiv: boolean | undefined
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

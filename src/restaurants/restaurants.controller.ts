@@ -79,8 +79,8 @@ export class RestaurantsController {
 
   @Patch(':id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin]}` })
+  @Roles(Role.Admin, Role.Owner)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Owner]}` })
   @ApiBearerAuth()
   update(@Param('id') id: string, @Body() updateRestaurantDto: UpdateRestaurantDto, @GetUser() user: user) {
     return this.restaurantsService.update(+id, updateRestaurantDto, user)

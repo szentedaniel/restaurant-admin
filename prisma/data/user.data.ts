@@ -36,5 +36,11 @@ export const users: Prisma.userCreateInput[] = [
         create: DemoRestaurants.Platan
       }
     }
+  },
+  {
+    email: 'owner@developer.com',
+    name: 'Owner Developer',
+    password: 'developer',
+    role: ['owner'],
   }
 ]

@@ -109,6 +109,7 @@ model ettermek {
   city_name                String                     @db.VarChar(255)
   lat                      Float?
   lng                      Float?
+  aktiv                    Boolean                    @default(true)
   etterem_kategoria_rend   etterem_kategoria_rend[]
   etterem_konyhatipus_rend etterem_konyhatipus_rend[]
   etterem_nyelv            etterem_nyelv[]

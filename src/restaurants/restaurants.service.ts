@@ -14,7 +14,11 @@ export class RestaurantsService {
 
   async findAll(user: user) {
     try {
-      const restaurants = await this.prisma.ettermek.findMany({})
+      const restaurants = await this.prisma.ettermek.findMany({
+        where: {
+          aktiv: true
+        }
+      })
 
       if (!restaurants.length) throw new NotFoundException('Not found restaurants')
 

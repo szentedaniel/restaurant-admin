@@ -190,7 +190,9 @@ export class AuthService {
     // if user does not exist throw exception
     if (!user) throw new NotFoundException('User not found.')
 
-    if (!user.etterem_id) throw new ForbiddenException()
+    const roles = JSON.parse(JSON.stringify(user.role))
+
+    if (!user.etterem_id && !roles.includes('owner')) throw new ForbiddenException()
 
     // compare passwords
     const pwMatches = await argon.verify(user.password, dto.password)

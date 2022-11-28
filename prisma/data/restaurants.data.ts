@@ -26,6 +26,7 @@ const Platan: Prisma.ettermekCreateInput = {
   weblap: 'https://platan-etterem.metro.rest/',
   img_path: ['https://static.designmynight.com/uploads/2020/10/INteriors2.jpg', 'https://www.corinthia.com/media/3305/corinthia_budapest_brasserie_atrium_restaurant_tables.jpg'],
   ceg: null,
+  aktiv: true,
   etterem_nyelv: {
     createMany: {
       data: [
