@@ -168,6 +168,29 @@ export class RestaurantsService {
     }
   }
 
+  async findAllForOwner() {
+    try {
+      const restaurants = await this.prisma.ettermek.findMany({
+        include: {
+          user: true
+        }
+      })
+
+      return await restaurants.map(r => {
+        return {
+          id: r.id,
+          name: r.name,
+          address: r.address,
+          phone: r.telefon,
+          owner: 'not defined',
+          active: r.aktiv
+        }
+      })
+    } catch (error) {
+      throw error
+    }
+  }
+
   private async isFavoriteFood(productId: number, user: user) {
     const isFavorite = await this.prisma.kedvenc_termekek.findFirst({
       where: {

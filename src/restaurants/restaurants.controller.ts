@@ -85,4 +85,14 @@ export class RestaurantsController {
   update(@Param('id') id: string, @Body() updateRestaurantDto: UpdateRestaurantDto, @GetUser() user: user) {
     return this.restaurantsService.update(+id, updateRestaurantDto, user)
   }
+
+  @Get('/forOwner')
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.Owner)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Owner]}` })
+  findAllForOwner() {
+    return this.restaurantsService.findAllForOwner()
+  }
+
 }
