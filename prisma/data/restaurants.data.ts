@@ -17,7 +17,7 @@ const Bassiana: Prisma.ettermekCreateInput = {
 const Platan: Prisma.ettermekCreateInput = {
   city_name: 'Sárvár',
   address: 'Hunyadi u 23',
-  name: 'Platàn Az Ízes Étterem',
+  name: 'Platán Az Ízes Étterem',
   adoszam: '12345678910',
   lat: 47.255623417945145,
   lng: 16.931086812915034,

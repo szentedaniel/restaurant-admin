@@ -176,18 +176,32 @@ export class RestaurantsService {
         }
       })
 
-      return await restaurants.map(r => {
+      return await Promise.all(restaurants.map(async r => {
         return {
           id: r.id,
           name: r.name,
           address: r.address,
           phone: r.telefon,
-          owner: 'not defined',
+          owner: await this.findUserNameById(r.created_by_user_id),
           active: r.aktiv
         }
-      })
+      }))
     } catch (error) {
       throw error
+    }
+  }
+
+  private async findUserNameById(id: number) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          id: id
+        }
+      })
+
+      return user.name
+    } catch (error) {
+      return 'not defined'
     }
   }
 

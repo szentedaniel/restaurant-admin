@@ -3,11 +3,32 @@ import { DemoRestaurants } from "./restaurants.data"
 
 export const users: Prisma.userCreateInput[] = [
   {
-    email: 'user@developer.com',
-    name: 'User Developer',
+    email: 'owner@developer.com',
+    name: 'Owner Developer',
     password: 'developer',
-    role: ['user'],
-    phone: '+36302982754'
+    role: ['owner'],
+  },
+  {
+    email: 'admin@developer.com',
+    name: 'Admin Developer',
+    password: 'developer',
+    role: ['admin'],
+    ettermek: {
+      connectOrCreate: {
+        where: {
+          id: 1
+        },
+        create: DemoRestaurants.Platan
+      }
+    },
+    ettermek_ettermek_created_by_user_idTouser: {
+      connectOrCreate: {
+        where: {
+          id: 1
+        },
+        create: DemoRestaurants.Platan
+      }
+    }
   },
   {
     email: 'staff@developer.com',
@@ -24,23 +45,10 @@ export const users: Prisma.userCreateInput[] = [
     }
   },
   {
-    email: 'admin@developer.com',
-    name: 'Admin Developer',
+    email: 'user@developer.com',
+    name: 'User Developer',
     password: 'developer',
-    role: ['admin'],
-    ettermek: {
-      connectOrCreate: {
-        where: {
-          id: 1
-        },
-        create: DemoRestaurants.Platan
-      }
-    }
+    role: ['user'],
+    phone: '+36302982754'
   },
-  {
-    email: 'owner@developer.com',
-    name: 'Owner Developer',
-    password: 'developer',
-    role: ['owner'],
-  }
 ]

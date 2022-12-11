@@ -90,9 +90,18 @@ export class AuthService {
               city_name: dto.cityName,
               address: dto.address,
               lat: Number(dto.lat),
-              lng: Number(dto.lng)
+              lng: Number(dto.lng),
             }
           }
+        }
+      })
+
+      await this.prisma.ettermek.update({
+        where: {
+          id: user.etterem_id
+        },
+        data: {
+          created_by_user_id: user.id
         }
       })
 
