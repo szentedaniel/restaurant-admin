@@ -237,7 +237,7 @@ export class OrdersService {
           }
         }
       })
-      if (orders.length === 0) throw new NotFoundException(`Not found unpayed orders`)
+      if (orders.length === 0) return []
       const results = await Promise.all(
         await orders.map(async order => {
           return await this.prisma.rendelesek.update({
