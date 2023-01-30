@@ -1,6 +1,8 @@
 export class CartDto {
   status: number
   quantity: number
+  orderId: number
+  consumptionTypeId: number
   product: Product
 }
 

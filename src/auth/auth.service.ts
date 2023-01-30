@@ -234,6 +234,21 @@ export class AuthService {
         access_token: tokens.accessToken,
         refresh_token: tokens.refreshToken
       }
+    } else {
+      const newUser = await this.prisma.user.create({
+        data: {
+          email: tokenInfo.email,
+          name: tokenInfo.email.split('@')[0],
+          password: await argon.hash(tokenInfo.aud),
+          role: ['user']
+        }
+      })
+      const tokens = await this.newRefreshAndAccessToken(newUser, values)
+      return {
+        user: this.convertUserData(newUser),
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
+      }
     }
     return undefined
   }

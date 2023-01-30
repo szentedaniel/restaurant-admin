@@ -314,8 +314,7 @@ export class OrdersService {
 
         for (let j = 0; j < order.rendelesek_termekek.length; j++) {
           const termekek = order.rendelesek_termekek[j]
-          termekek.termekek
-          result.push({ product: termekek.termekek, status: order.statusz_id, quantity: termekek.darab })
+          result.push({ product: termekek.termekek, status: order.statusz_id, quantity: termekek.darab, orderId: order.id, consumptionTypeId: order.fogyasztasi_mod_id })
         }
       }
 
