@@ -91,6 +91,7 @@ export class AuthService {
               address: dto.address,
               lat: Number(dto.lat),
               lng: Number(dto.lng),
+              aktiv: false,
             }
           }
         }
