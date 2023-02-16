@@ -7,7 +7,7 @@ import { RestaurantsService } from 'src/restaurants/restaurants.service'
 import { genOrderUniqueId } from 'src/utils'
 import { CartDto } from './dto/cart.dto'
 import { CreateOrderDto } from './dto/create-order.dto'
-import { myCartDto, PayRequiredDto, UpdateOrderDto } from './dto/update-order.dto'
+import { myCartDto, PayRequiredDto, UpdateOrderDto, UpdateOrderProductDto } from './dto/update-order.dto'
 
 @Injectable()
 export class OrdersService {
@@ -226,6 +226,29 @@ export class OrdersService {
     }
   }
 
+  async updateOrderProd(orderId: string, prodId: number, dto: UpdateOrderProductDto) {
+    try {
+      const prod = await this.prisma.rendelesek_termekek.update({
+        where: {
+          rendeles_id_termek_id: {
+            rendeles_id: orderId,
+            termek_id: prodId
+          }
+        },
+        data: dto
+      })
+
+      return await (await this.findOne(prod.rendeles_id)).rendelesek_termekek
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Order or Order's product not found`)
+        }
+      }
+      throw error
+    }
+  }
+
   async payReq(dto: PayRequiredDto, user: user) {
     try {
       const orders = await this.prisma.rendelesek.findMany({
@@ -314,7 +337,7 @@ export class OrdersService {
 
         for (let j = 0; j < order.rendelesek_termekek.length; j++) {
           const termekek = order.rendelesek_termekek[j]
-          result.push({ product: termekek.termekek, status: order.statusz_id, quantity: termekek.darab, orderId: order.id, consumptionTypeId: order.fogyasztasi_mod_id })
+          result.push({ product: termekek.termekek, status: order.statusz_id, quantity: termekek.darab, canceled: termekek.canceled, orderId: order.id, consumptionTypeId: order.fogyasztasi_mod_id })
         }
       }
 

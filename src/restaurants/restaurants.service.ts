@@ -466,6 +466,7 @@ export class RestaurantsService {
 
       return {
         status: p.status,
+        canceled: p.canceled,
         quantity: p.quantity,
         orderId: p.orderId,
         consumptionTypeId: p.consumptionTypeId,

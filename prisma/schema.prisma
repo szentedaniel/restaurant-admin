@@ -105,12 +105,12 @@ model ettermek {
   weblap                                 String?                    @db.VarChar(255)
   img_path                               Json?
   img_bg_path                            String?                    @db.VarChar(255)
-  aktiv                                  Boolean                    @default(true)
+  aktiv                                  Boolean                    @default(false)
   ceg                                    String?                    @db.VarChar(255)
   city_name                              String                     @db.VarChar(255)
+  created_by_user_id                     Int?
   lat                                    Float?
   lng                                    Float?
-  created_by_user_id                     Int?
   user_ettermek_created_by_user_idTouser user?                      @relation("ettermek_created_by_user_idTouser", fields: [created_by_user_id], references: [id], onUpdate: NoAction, map: "fk_ettermek_user")
   etterem_kategoria_rend                 etterem_kategoria_rend[]
   etterem_konyhatipus_rend               etterem_konyhatipus_rend[]
@@ -375,6 +375,7 @@ model rendelesek_termekek {
   rendeles_id String     @db.VarChar(8)
   termek_id   Int
   darab       Int
+  canceled    Boolean    @default(false)
   termekek    termekek   @relation(fields: [termek_id], references: [id], onDelete: Cascade, map: "fk_rendelesek_termekek")
   rendelesek  rendelesek @relation(fields: [rendeles_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rendelesek_termekek_rendeles")
 

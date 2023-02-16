@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, UseGuards, HttpCode } from '@nestjs/common'
 import { OrdersService } from './orders.service'
 import { CreateOrderDto } from './dto/create-order.dto'
-import { myCartDto, PayRequiredDto, UpdateOrderDto } from './dto/update-order.dto'
+import { myCartDto, PayRequiredDto, UpdateOrderDto, UpdateOrderProductDto } from './dto/update-order.dto'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { GetUser, Roles } from 'src/auth/decorator'
 import { user } from '@prisma/client'
@@ -58,6 +58,15 @@ export class OrdersController {
   @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(id, updateOrderDto)
+  }
+
+  @Patch(':orderId/:prodId')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
+  @Roles(Role.Staff, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  updateOrderProd(@Param('orderId') orderId: string, @Param('prodId') prodId: string, @Body() updateOrderDto: UpdateOrderProductDto) {
+    return this.ordersService.updateOrderProd(orderId, +prodId, updateOrderDto)
   }
 
   @ApiTags('mobile')

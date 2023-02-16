@@ -1,11 +1,21 @@
 /* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNumber } from 'class-validator'
+import { IsBoolean, IsNumber } from 'class-validator'
 
 export class UpdateOrderDto {
   @ApiProperty()
   @IsNumber()
   statusz_id: number
+}
+
+export class UpdateOrderProductDto {
+  @ApiProperty()
+  @IsNumber()
+  darab: number
+
+  @ApiProperty()
+  @IsBoolean()
+  canceled: boolean
 }
 
 export class PayRequiredDto {
