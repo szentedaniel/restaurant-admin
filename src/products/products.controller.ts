@@ -16,8 +16,8 @@ export class ProductsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   create(@Body() createProductDto: CreateProductDto, @GetUser() user: user) {
     return this.productsService.create(createProductDto, user)
   }
@@ -26,8 +26,8 @@ export class ProductsController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   findAll(@GetUser() user: user) {
     return this.productsService.findAll(user)
   }
@@ -35,8 +35,8 @@ export class ProductsController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id)
   }
@@ -45,8 +45,8 @@ export class ProductsController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(+id, updateProductDto)
   }

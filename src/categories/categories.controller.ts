@@ -17,8 +17,8 @@ export class CategoriesController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   @ApiResponse({
     status: 201,
     type: defaultCategoryResposeDto
@@ -30,8 +30,8 @@ export class CategoriesController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   @ApiResponse({
     isArray: true,
     status: 200,
@@ -44,8 +44,8 @@ export class CategoriesController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   @ApiResponse({
     status: 200,
     type: defaultCategoryResposeDto
@@ -57,8 +57,8 @@ export class CategoriesController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted]}` })
   @ApiResponse({
     status: 200,
     type: defaultCategoryResposeDto

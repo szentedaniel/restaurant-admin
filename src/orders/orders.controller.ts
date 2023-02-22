@@ -36,8 +36,8 @@ export class OrdersController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Staff, Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  @Roles(Role.Staff, Role.Restricted, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Restricted, Role.Admin]}` })
   findAll(@GetUser('etterem_id') restaurantId: number) {
     return this.ordersService.findAllOrdersByRestaurant(restaurantId)
   }
@@ -45,8 +45,8 @@ export class OrdersController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
-  @Roles(Role.Staff, Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  @Roles(Role.Staff, Role.Restricted, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Restricted, Role.Admin]}` })
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id)
   }
@@ -54,8 +54,8 @@ export class OrdersController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
-  @Roles(Role.Staff, Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  @Roles(Role.Staff, Role.Restricted, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Restricted, Role.Admin]}` })
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(id, updateOrderDto)
   }
@@ -63,8 +63,8 @@ export class OrdersController {
   @Patch(':orderId/:prodId')
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
-  @Roles(Role.Staff, Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  @Roles(Role.Staff, Role.Restricted, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Restricted, Role.Admin]}` })
   updateOrderProd(@Param('orderId') orderId: string, @Param('prodId') prodId: string, @Body() updateOrderDto: UpdateOrderProductDto) {
     return this.ordersService.updateOrderProd(orderId, +prodId, updateOrderDto)
   }

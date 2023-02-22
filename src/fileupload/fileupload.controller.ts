@@ -16,8 +16,8 @@ export class FileuploadController {
 
   @Post('upload')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Staff, Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  @Roles(Role.Restricted, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Restricted, Role.Admin]}` })
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -59,8 +59,8 @@ export class FileuploadController {
 
   @Post('product')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Staff, Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  @Roles(Role.Restricted, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Restricted, Role.Admin]}` })
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -102,8 +102,8 @@ export class FileuploadController {
 
   @Post('restaurant')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Staff, Role.Admin)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Staff, Role.Admin]}` })
+  @Roles(Role.Restricted, Role.Admin)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Restricted, Role.Admin]}` })
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({

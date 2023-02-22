@@ -31,6 +31,20 @@ export const users: Prisma.userCreateInput[] = [
     }
   },
   {
+    email: 'restricted@developer.com',
+    name: 'Restricted Developer',
+    password: 'developer',
+    role: ['restricted'],
+    ettermek: {
+      connectOrCreate: {
+        where: {
+          id: 1
+        },
+        create: DemoRestaurants.Platan
+      }
+    }
+  },
+  {
     email: 'staff@developer.com',
     name: 'Staff Developer',
     password: 'developer',

@@ -15,8 +15,8 @@ export class TablesController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted, Role.Staff)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted, Role.Staff]}` })
   create(@Body() createTableDto: CreateTableDto, @GetUser('etterem_id') restaurantId: number) {
     return this.tablesService.create(createTableDto, restaurantId)
   }
@@ -40,8 +40,8 @@ export class TablesController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Staff)
-  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Staff]}` })
+  @Roles(Role.Admin, Role.Restricted, Role.Staff)
+  @ApiOperation({ summary: `ReqRole: ${[Role.Admin, Role.Restricted, Role.Staff]}` })
   update(@Param('id') id: string, @Body() updateTableDto: UpdateTableDto) {
     return this.tablesService.update(+id, updateTableDto)
   }
