@@ -6,6 +6,7 @@ import { AuthSignInDto, AuthSignUpAdminDto, AuthSignUpDto, ForgotPasswordDto, Re
 import { emailVerifyDto, defaultAuthResponseDto, ErrorResonseDto, ForgotPasswordSuccessfulResponseDto } from './dto/authRespose.dto'
 import GoogleTokenDto from './dto/google-token.dto'
 import RefreshTokenDto from './dto/refresh-token.dto'
+import FacebookLoginDto from './dto/facebook-login.dto'
 
 
 @ApiTags('auth')
@@ -115,7 +116,7 @@ export class AuthController {
     @Req() req,
     @Ip() ip: string,
   ): Promise<{ user: Partial<user>, access_token: string; refresh_token: string }> {
-    const result = await this.authService.loginGoogleUser(body.token, {
+    const result = await this.authService.loginGoogleUser(body.email, {
       userAgent: req.headers['user-agent'],
       ipAddress: ip,
     })
@@ -126,6 +127,43 @@ export class AuthController {
         {
           status: HttpStatus.UNAUTHORIZED,
           error: 'Error while logging in with google',
+        },
+        HttpStatus.UNAUTHORIZED,
+      )
+    }
+  }
+
+  @ApiTags('mobile')
+  @Post('/facebook/login')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    type: defaultAuthResponseDto
+  })
+  @ApiResponse({
+    status: 403,
+    type: ErrorResonseDto
+  })
+  @ApiResponse({
+    status: 404,
+    type: ErrorResonseDto
+  })
+  async facebookLogin(
+    @Body() body: FacebookLoginDto,
+    @Req() req,
+    @Ip() ip: string,
+  ): Promise<{ user: Partial<user>, access_token: string; refresh_token: string }> {
+    const result = await this.authService.loginFacebookUser(body.email, {
+      userAgent: req.headers['user-agent'],
+      ipAddress: ip,
+    })
+    if (result) {
+      return result
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Error while logging in with facebook',
         },
         HttpStatus.UNAUTHORIZED,
       )

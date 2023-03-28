@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import { Allergen, CategoriesDto, ProductDto } from './dto/products.dto'
 import { RestaurantDto } from './dto/restaurant.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
+import * as _ from 'lodash'
 
 @Injectable()
 export class RestaurantsService {
@@ -262,7 +263,7 @@ export class RestaurantsService {
 
 
     const result: RestaurantDto[] = results.map(r => {
-      if (r.address && r.email && !!r.kedvenc !== null && !!r.kedvenc !== undefined && r.id && r.lat && r.lng && r.name && r.nyitvatartas && r.telefon && r.fogyasztasi_modok) {
+      if (r.address && r.email && !!r.kedvenc !== null && !!r.kedvenc !== undefined && r.id && r.lat && r.lng && r.name && r.nyitvatartas !== null && r.nyitvatartas !== undefined && r.nyitvatartas && Array.isArray(r.nyitvatartas) && (r.nyitvatartas.length === 7) && r.telefon && r.fogyasztasi_modok) {
         return {
           id: r.id,
           address: r.address,
@@ -272,7 +273,7 @@ export class RestaurantsService {
           latitude: r.lat,
           longitude: r.lng,
           name: r.name,
-          openingHours: r.nyitvatartas[day].open ? `${r.nyitvatartas[day].start};${r.nyitvatartas[day].end}` : '-;-',
+          openingHours: (_.has(r.nyitvatartas[day], 'open') && r.nyitvatartas[day].open) ? `${r.nyitvatartas[day].start};${r.nyitvatartas[day].end}` : '-;-',
           phone: r.telefonm,
           serviceType: r.fogyasztasi_modok.map(x => x.id),
           description: r.descriptions,

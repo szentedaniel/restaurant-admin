@@ -92,6 +92,44 @@ export class AuthService {
               lat: Number(dto.lat),
               lng: Number(dto.lng),
               aktiv: false,
+              img_path: [],
+              nyitvatartas: [
+                {
+                  open: false,
+                  start: '08:00',
+                  end: '17:00',
+                },
+                {
+                  open: false,
+                  start: '08:00',
+                  end: '17:00',
+                },
+                {
+                  open: false,
+                  start: '08:00',
+                  end: '17:00',
+                },
+                {
+                  open: false,
+                  start: '08:00',
+                  end: '17:00',
+                },
+                {
+                  open: false,
+                  start: '08:00',
+                  end: '17:00',
+                },
+                {
+                  open: false,
+                  start: '08:00',
+                  end: '17:00',
+                },
+                {
+                  open: false,
+                  start: '08:00',
+                  end: '17:00',
+                },
+              ]
             }
           }
         }
@@ -221,11 +259,41 @@ export class AuthService {
     return response
   }
 
-  async loginGoogleUser(token: string, values: { userAgent: string, ipAddress: string }): Promise<{ user: convertedUserDto, access_token: string, refresh_token: string } | undefined> {
-    const tokenInfo = await this.oauthClient.getTokenInfo(token)
+  async loginGoogleUser(email: string, values: { userAgent: string, ipAddress: string }): Promise<{ user: convertedUserDto, access_token: string, refresh_token: string } | undefined> {
+    //   const tokenInfo = await this.oauthClient.getTokenInfo(token)
+    //   const user = await this.prisma.user.findFirst({
+    //     where: {
+    //       email: tokenInfo.email
+    //     }
+    //   })
+    //   if (user) {
+    //     const tokens = await this.newRefreshAndAccessToken(user, values)
+    //     return {
+    //       user: this.convertUserData(user),
+    //       access_token: tokens.accessToken,
+    //       refresh_token: tokens.refreshToken
+    //     }
+    //   } else {
+    //     const newUser = await this.prisma.user.create({
+    //       data: {
+    //         email: tokenInfo.email,
+    //         name: tokenInfo.email.split('@')[0],
+    //         password: await argon.hash(tokenInfo.aud),
+    //         role: ['user']
+    //       }
+    //     })
+    //     const tokens = await this.newRefreshAndAccessToken(newUser, values)
+    //     return {
+    //       user: this.convertUserData(newUser),
+    //       access_token: tokens.accessToken,
+    //       refresh_token: tokens.refreshToken
+    //     }
+    //   }
+    //   return undefined
+    // }
     const user = await this.prisma.user.findFirst({
       where: {
-        email: tokenInfo.email
+        email: email
       }
     })
     if (user) {
@@ -238,9 +306,41 @@ export class AuthService {
     } else {
       const newUser = await this.prisma.user.create({
         data: {
-          email: tokenInfo.email,
-          name: tokenInfo.email.split('@')[0],
-          password: await argon.hash(tokenInfo.aud),
+          email: email,
+          name: email.split('@')[0],
+          password: await argon.hash(objectHash({ email: email })),
+          role: ['user']
+        }
+      })
+      const tokens = await this.newRefreshAndAccessToken(newUser, values)
+      return {
+        user: this.convertUserData(newUser),
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
+      }
+    }
+    return undefined
+  }
+
+  async loginFacebookUser(email: string, values: { userAgent: string, ipAddress: string }): Promise<{ user: convertedUserDto, access_token: string, refresh_token: string } | undefined> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: email
+      }
+    })
+    if (user) {
+      const tokens = await this.newRefreshAndAccessToken(user, values)
+      return {
+        user: this.convertUserData(user),
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
+      }
+    } else {
+      const newUser = await this.prisma.user.create({
+        data: {
+          email: email,
+          name: email.split('@')[0],
+          password: await argon.hash(objectHash({ email: email })),
           role: ['user']
         }
       })
