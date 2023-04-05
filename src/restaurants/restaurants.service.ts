@@ -470,6 +470,7 @@ export class RestaurantsService {
         canceled: p.canceled,
         quantity: p.quantity,
         orderId: p.orderId,
+        dailyOrderId: p.dailyOrderId,
         consumptionTypeId: p.consumptionTypeId,
         product: temp,
       }

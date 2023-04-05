@@ -103,7 +103,7 @@ model ettermek {
   email                                  String?                    @db.VarChar(255)
   nyitvatartas                           Json?
   weblap                                 String?                    @db.VarChar(255)
-  img_path                               Json?
+  img_path                               Json
   img_bg_path                            String?                    @db.VarChar(255)
   aktiv                                  Boolean                    @default(false)
   ceg                                    String?                    @db.VarChar(255)
@@ -191,6 +191,7 @@ model rendelesek {
   fizetes_most        Boolean
   fizetesi_mod_id     Int?
   fogyasztasi_mod_id  Int
+  daily_id            Int?
   ettermek            ettermek              @relation(fields: [etterem_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_etteremId_ettermek")
   rendeles_statusz    rendeles_statusz      @relation(fields: [statusz_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_statuszId_rendelesStatusz")
   user                user                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_rendelesek_userId_user")

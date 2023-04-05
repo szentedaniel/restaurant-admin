@@ -1,7 +1,9 @@
 export class CartDto {
   status: number
+  canceled: boolean
   quantity: number
-  orderId: number
+  orderId: string
+  dailyOrderId: number
   consumptionTypeId: number
   product: Product
 }

@@ -15,9 +15,20 @@ export class OrdersService {
 
   async createOrder(dto: CreateOrderDto, user: user) {
     try {
+      const today = new Date()
+
+      const dailyCounter = await this.prisma.rendelesek.count({
+        where: {
+          etterem_id: dto.etterem_id,
+          rendeles_ideje: {
+            gte: new Date(today.toISOString().split('T')[0]),
+          }
+        }
+      }) + 1
       const order = await this.prisma.rendelesek.create({
         data: {
           id: await this.getOrderId(),
+          daily_id: dailyCounter,
           user_id: user.id,
           etterem_id: dto.etterem_id,
           statusz_id: 1,
@@ -337,7 +348,7 @@ export class OrdersService {
 
         for (let j = 0; j < order.rendelesek_termekek.length; j++) {
           const termekek = order.rendelesek_termekek[j]
-          result.push({ product: termekek.termekek, status: order.statusz_id, quantity: termekek.darab, canceled: termekek.canceled, orderId: order.id, consumptionTypeId: order.fogyasztasi_mod_id })
+          result.push({ product: termekek.termekek, status: order.statusz_id, quantity: termekek.darab, canceled: termekek.canceled, orderId: order.id, dailyOrderId: order.daily_id, consumptionTypeId: order.fogyasztasi_mod_id })
         }
       }
 
